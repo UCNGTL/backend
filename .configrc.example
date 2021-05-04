@@ -1,0 +1,14 @@
+{
+  "database": {
+    "name": "",
+    "password": "",
+    "server": "",
+    "user": ""
+  },
+  "isDevelopmentEnvironment": true,
+  "port": 3000,
+  "security": {
+    "privateKeyFilename": "jwtRS256.key",
+    "publicKeyFilename": "jwtRS256.key.pub"
+  }
+}
