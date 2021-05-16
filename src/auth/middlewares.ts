@@ -1,8 +1,9 @@
-import type { NextFunction, Request, Response } from 'express';
 import createError from 'http-errors';
 
 import { verifyAccessToken } from './repository';
+
 import type { JWTPayload } from './types';
+import type { NextFunction, Request, Response } from 'express';
 
 const ensureAuth = async (
   request: Request,
