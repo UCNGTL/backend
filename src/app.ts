@@ -8,6 +8,7 @@ import createError from 'http-errors';
 import authRoutes from './auth/routes';
 import internalRoutes from './internal/routes';
 import peopleRoutes from './people/routes';
+import bookRoutes from './books/routes';
 import { handleError } from './utils';
 import config from './utils/config';
 
@@ -23,6 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(authRoutes);
 app.use(internalRoutes);
 app.use(peopleRoutes);
+app.use(bookRoutes)
 
 app.use('*', (request: Request, response: Response, next: NextFunction) => {
   next(createError(404, 'Page does not exist.', { expose: true }));

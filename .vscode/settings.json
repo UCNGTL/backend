@@ -1,0 +1,10 @@
+{
+    "eslint.format.enable": true,
+    "docker.commands.attach": null,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "eslint.validate": [
+        "javascript"
+    ]
+}

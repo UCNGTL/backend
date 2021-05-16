@@ -1,8 +1,11 @@
 import knex from 'knex';
+import { attachPaginate } from 'knex-paginate';
 
 import config from './config';
 
-export default knex({
+attachPaginate();
+
+const database = knex({
   client: 'mssql',
   connection: {
     database: config.database.name,
@@ -11,3 +14,5 @@ export default knex({
     user: config.database.user,
   },
 });
+
+export default database;
