@@ -1,8 +1,6 @@
 import compression from 'compression';
-import type { NextFunction, Request, Response } from 'express';
 import express from 'express';
 import helmet from 'helmet';
-import type { HttpError } from 'http-errors';
 import createError from 'http-errors';
 
 import authRoutes from './auth/routes';
@@ -11,6 +9,9 @@ import peopleRoutes from './people/routes';
 import bookRoutes from './books/routes';
 import { handleError } from './utils';
 import config from './utils/config';
+
+import type { NextFunction, Request, Response } from 'express';
+import type { HttpError } from 'http-errors';
 
 const app = express();
 

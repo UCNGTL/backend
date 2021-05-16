@@ -2,12 +2,14 @@ import type { NextFunction, Request, Response } from 'express';
 import { Router } from 'express';
 import createError from 'http-errors';
 
+import { getStaffPersonBySsn } from '../staff/repository';
 import { createResponsePayload } from '../utils';
 import * as redis from '../utils/redis';
 
 import {
   generateAccessToken,
   generateRefreshToken,
+  passwordAndPasswordHashMatches,
   verifyRefreshToken,
 } from './repository';
 import type { LoginBody } from './types';
@@ -24,9 +26,11 @@ router.post(
     try {
       const { password, ssn } = request.body;
 
-      // @TODO: Implement propert password checking
-      if (ssn !== 'AAAOCUR1' || password !== 'AdrienBorer') {
-        next(createError(401, 'Incorrect password.', { expose: true }));
+      try {
+        const { passwordHash } = await getStaffPersonBySsn(ssn);
+        await passwordAndPasswordHashMatches(password, passwordHash.toString());
+      } catch (error) {
+        next(error);
         return;
       }
 
@@ -54,6 +58,7 @@ router.post(
         ssn = payload.ssn;
       } catch {
         next(createError(401, 'Provided token is invalid.', { expose: true }));
+        return;
       }
 
       const associatedSsn = await redis.get(refreshToken);
@@ -65,6 +70,7 @@ router.post(
             { expose: true },
           ),
         );
+        return;
       }
 
       const accessToken = await generateAccessToken(ssn);

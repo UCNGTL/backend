@@ -1,6 +1,8 @@
 import fs from 'fs/promises';
 import path from 'path';
 
+import bcrypt from 'bcrypt';
+import createError from 'http-errors';
 import { sign, verify } from 'jsonwebtoken';
 
 import config from '../utils/config';
@@ -47,6 +49,16 @@ const generateRefreshToken = async (ssn: string): Promise<string> => {
       },
     );
   });
+};
+
+const passwordAndPasswordHashMatches = async (
+  password: string,
+  passwordHash: string,
+) => {
+  const isMatch = await bcrypt.compare(password, passwordHash);
+  if (!isMatch) {
+    throw createError(401, 'Provided password is incorrect', { expose: true });
+  }
 };
 
 const verifyAccessToken = async (accessToken: string): Promise<JWTPayload> => {
@@ -98,6 +110,7 @@ const verifyRefreshToken = async (
 export {
   generateAccessToken,
   generateRefreshToken,
+  passwordAndPasswordHashMatches,
   verifyAccessToken,
   verifyRefreshToken,
 };
