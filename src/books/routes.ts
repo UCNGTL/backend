@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import type { Request, Response } from 'express';
 
-// import { ensureAuth } from '../auth/middlewares';
+import { ensureAuth } from '../auth/middlewares';
 import { createResponsePayload } from '../utils';
 
 import { getBooksWithFilterValues } from './repository';
@@ -11,7 +11,7 @@ const router = Router();
 
 router.get(
   '/books',
-  // ensureAuth,
+  ensureAuth,
   async (request: Request, response: Response) => {
     const {
       language,
