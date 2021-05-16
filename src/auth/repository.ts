@@ -9,7 +9,7 @@ import type { JWTPayload } from './types';
 
 const generateAccessToken = async (ssn: string): Promise<string> => {
   const privateKey = await fs.readFile(
-    path.resolve(`./security/${config.security.privateKeyFilename}`),
+    path.resolve(`./security/${config.security.accessTokenPrivateKeyFilename}`),
   );
 
   return await new Promise((resolve, reject) => {
@@ -27,9 +27,31 @@ const generateAccessToken = async (ssn: string): Promise<string> => {
   });
 };
 
+const generateRefreshToken = async (ssn: string): Promise<string> => {
+  const privateKey = await fs.readFile(
+    path.resolve(
+      `./security/${config.security.refreshTokenPrivateKeyFilename}`,
+    ),
+  );
+
+  return await new Promise((resolve, reject) => {
+    sign(
+      { ssn },
+      privateKey,
+      { algorithm: 'RS256', expiresIn: '24h' },
+      (error, accessToken) => {
+        if (error) {
+          reject(error);
+        }
+        resolve(accessToken);
+      },
+    );
+  });
+};
+
 const verifyAccessToken = async (accessToken: string): Promise<JWTPayload> => {
   const publicKey = await fs.readFile(
-    path.resolve(`./security/${config.security.publicKeyFilename}`),
+    path.resolve(`./security/${config.security.accessTokenPublicKeyFilename}`),
   );
 
   return await new Promise((resolve, reject) => {
@@ -49,4 +71,33 @@ const verifyAccessToken = async (accessToken: string): Promise<JWTPayload> => {
   });
 };
 
-export { generateAccessToken, verifyAccessToken };
+const verifyRefreshToken = async (
+  refreshToken: string,
+): Promise<JWTPayload> => {
+  const publicKey = await fs.readFile(
+    path.resolve(`./security/${config.security.refreshTokenPublicKeyFilename}`),
+  );
+
+  return await new Promise((resolve, reject) => {
+    verify(
+      refreshToken,
+      publicKey,
+      {
+        algorithms: ['RS256'],
+      },
+      (error, payload: JWTPayload) => {
+        if (error) {
+          reject(error);
+        }
+        resolve(payload);
+      },
+    );
+  });
+};
+
+export {
+  generateAccessToken,
+  generateRefreshToken,
+  verifyAccessToken,
+  verifyRefreshToken,
+};

@@ -12,17 +12,9 @@ const ensureAuth = async (
   if (!request.headers.authorization) {
     next(
       createError(401, 'No authorization header present in request.', {
-        expose: false,
+        expose: true,
       }),
     );
-    return;
-  }
-
-  try {
-    // @ts-expect-error
-    [].parseInt(50);
-  } catch (error) {
-    next(error);
     return;
   }
 

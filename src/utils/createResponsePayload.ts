@@ -3,19 +3,21 @@ type ApiFieldError = {
   source: string;
 };
 
-type CreateJSONPayloadSignature = {
-  errors?: ApiFieldError[];
-  message?: string;
-  payload?: unknown;
-  status?: number;
-};
+type CreateJSONPayloadSignature =
+  | {
+      errors?: ApiFieldError[];
+      message?: string;
+      payload?: unknown;
+      status?: number;
+    }
+  | undefined;
 
 export default ({
   errors = [],
   message = 'Ok',
   payload,
   status = 200,
-}: CreateJSONPayloadSignature) => {
+}: CreateJSONPayloadSignature = {}) => {
   return {
     errors,
     message,

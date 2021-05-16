@@ -7,8 +7,14 @@
   },
   "isDevelopmentEnvironment": true,
   "port": 3000,
+  "redis": {
+    "host": "",
+    "port": "",
+  },
   "security": {
-    "privateKeyFilename": "jwtRS256.key",
-    "publicKeyFilename": "jwtRS256.key.pub"
+    "accessTokenPrivateKeyFilename": "accessTokenPrivate.pem",
+    "accessTokenPublicKeyFilename": "accessTokenPublic.pem",
+    "refreshTokenPrivateKeyFilename": "refreshTokenPrivate.pem",
+    "refreshTokenPublicKeyFilename": "refreshTokenPublic.pem"
   }
 }

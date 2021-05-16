@@ -7,15 +7,25 @@ type DatabaseConfig = {
   user: string;
 };
 
+type RedisConfig = {
+  host: string;
+  password: string | null;
+  port: number;
+  user: string | null;
+};
+
 type SecurityConfig = {
-  privateKeyFilename: string;
-  publicKeyFilename: string;
+  accessTokenPrivateKeyFilename: string;
+  accessTokenPublicKeyFilename: string;
+  refreshTokenPrivateKeyFilename: string;
+  refreshTokenPublicKeyFilename: string;
 };
 
 type Config = {
   database: DatabaseConfig;
   isDevelopmentEnvironment: boolean;
   port: number;
+  redis: RedisConfig;
   security: SecurityConfig;
 };
 
