@@ -14,9 +14,9 @@ type IPersonAddress = {
 
 type IMember = IPerson &
   IPersonAddress & {
-    memberId: string;
     campus: string;
     isProfessor: boolean;
+    phoneNumber: string;
   };
 
 export type { IPerson, IMember };
