@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { ensureAuth } from '../auth/middlewares';
+import { ensureAuth, ensureRole } from '../auth/middlewares';
 import { createResponsePayload } from '../utils';
 
 import {
@@ -18,6 +18,7 @@ const router = Router();
 router.get(
   '/people/top-50-people',
   ensureAuth,
+  ensureRole('references librarian'),
   async (request: Request, response: Response) => {
     const data = await getTopFiftyPeople();
     response.json(createResponsePayload({ payload: data }));

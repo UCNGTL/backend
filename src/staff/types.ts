@@ -1,7 +1,9 @@
-type TStaff = {
+type TStaffPerson = {
   role: string;
   ssn: string;
   passwordHash: Buffer;
 };
 
-export type { TStaff };
+type TStaffPersonWithoutPasswordHash = Omit<TStaffPerson, 'passwordHash'>;
+
+export type { TStaffPerson, TStaffPersonWithoutPasswordHash };

@@ -1,4 +1,4 @@
-import type { NextFunction, Request, Response } from 'express';
+import type { NextFunction, Response } from 'express';
 import { Router } from 'express';
 import createError from 'http-errors';
 
@@ -12,30 +12,28 @@ import {
   passwordAndPasswordHashMatches,
   verifyRefreshToken,
 } from './repository';
-import type { LoginBody } from './types';
+import type { TLoginRequest, TRefreshTokenRequest } from './types';
 
 const router = Router();
 
 router.post(
   '/auth/login',
-  async (
-    request: Request<{}, {}, LoginBody>,
-    response: Response,
-    next: NextFunction,
-  ) => {
+  async (request: TLoginRequest, response: Response, next: NextFunction) => {
     try {
       const { password, ssn } = request.body;
 
+      let staffPerson;
       try {
-        const { passwordHash } = await getStaffPersonBySsn(ssn);
+        const { passwordHash, ...rest } = await getStaffPersonBySsn(ssn);
+        staffPerson = rest;
         await passwordAndPasswordHashMatches(password, passwordHash.toString());
       } catch (error) {
         next(error);
         return;
       }
 
-      const accessToken = await generateAccessToken(ssn);
-      const refreshToken = await generateRefreshToken(ssn);
+      const accessToken = await generateAccessToken(staffPerson);
+      const refreshToken = await generateRefreshToken(staffPerson);
       await redis.set(refreshToken, ssn);
       response.send(
         createResponsePayload({ payload: { accessToken, refreshToken } }),
@@ -48,21 +46,24 @@ router.post(
 
 router.post(
   '/auth/token',
-  async (request: Request, response: Response, next: NextFunction) => {
+  async (
+    request: TRefreshTokenRequest,
+    response: Response,
+    next: NextFunction,
+  ) => {
     try {
       const { refreshToken } = request.body;
 
-      let ssn;
+      let staffPerson;
       try {
-        const payload = await verifyRefreshToken(refreshToken);
-        ssn = payload.ssn;
+        staffPerson = await verifyRefreshToken(refreshToken);
       } catch {
         next(createError(401, 'Provided token is invalid.', { expose: true }));
         return;
       }
 
       const associatedSsn = await redis.get(refreshToken);
-      if (ssn !== associatedSsn) {
+      if (staffPerson.ssn !== associatedSsn) {
         next(
           createError(
             401,
@@ -73,7 +74,7 @@ router.post(
         return;
       }
 
-      const accessToken = await generateAccessToken(ssn);
+      const accessToken = await generateAccessToken(staffPerson);
       response.send(createResponsePayload({ payload: { accessToken } }));
     } catch (error) {
       next(error);

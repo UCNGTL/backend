@@ -2,14 +2,14 @@ import createError from 'http-errors';
 
 import database from '../utils/database';
 
-import type { TStaff } from './types';
+import type { TStaffPerson } from './types';
 
 const getStaffPersonBySsn = async (
   ssn: string,
   throwIfNotFound = true,
-): Promise<TStaff> => {
+): Promise<TStaffPerson> => {
   const result = await database('dbo.staff')
-    .select('*')
+    .select('role', 'personSsn as ssn', 'passwordHash')
     .where({
       personSsn: ssn,
     })

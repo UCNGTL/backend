@@ -1,10 +1,23 @@
-type LoginBody = {
-  password: string;
-  ssn: string;
-};
+import type { Request } from 'express';
 
-type JWTPayload = {
-  ssn: string;
-};
+import type { TStaffPerson } from '../staff/types';
 
-export { LoginBody, JWTPayload };
+type TLoginRequest = Request<
+  {},
+  {},
+  {
+    ssn: string;
+    password: string;
+  }
+>;
+
+type TRefreshTokenRequest = Exclude<TStaffPerson, 'passwordHash'> &
+  Request<
+    {},
+    {},
+    {
+      refreshToken: string;
+    }
+  >;
+
+export { TLoginRequest, TRefreshTokenRequest };

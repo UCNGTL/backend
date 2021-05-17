@@ -6,7 +6,7 @@ import { createResponsePayload } from '../utils';
 const router = Router();
 
 router.post(
-  '/internal/sync-employees',
+  '/internal/send-notices',
   async (request: Request, response: Response) => {
     response.json(createResponsePayload());
   },

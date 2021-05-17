@@ -19,9 +19,9 @@
         "checksVoidReturn": false
       }
     ],
+    "@typescript-eslint/unbound-method": "off",
     "consistent-return": "off",
     "filenames/match-exported": "off",
-    "newline-before-return": "off",
     "import/order": [
       "error",
       {
@@ -32,7 +32,8 @@
         "newlines-between": "always"
       }
     ],
+    "newline-before-return": "off",
     "node/callback-return": "off",
-    "@typescript-eslint/unbound-method": "off"
+    "unicorn/prevent-abbreviations": "off"
   }
 }

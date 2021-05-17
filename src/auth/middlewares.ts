@@ -1,14 +1,16 @@
-import type { NextFunction, Request, Response } from 'express';
+import type { NextFunction, Response } from 'express';
 import createError from 'http-errors';
 
+import ROLES_HIERARCHY from '../utils/rolesHierarchy';
+import type { TRequest } from '../utils/types';
+
 import { verifyAccessToken } from './repository';
-import type { JWTPayload } from './types';
 
 const ensureAuth = async (
-  request: Request,
+  request: TRequest,
   response: Response,
   next: NextFunction,
-): Promise<JWTPayload> => {
+) => {
   if (!request.headers.authorization) {
     next(
       createError(401, 'No authorization header present in request.', {
@@ -20,7 +22,7 @@ const ensureAuth = async (
 
   try {
     const [, accessToken] = request.headers.authorization.split(' ');
-    await verifyAccessToken(accessToken);
+    request.user = await verifyAccessToken(accessToken);
     next();
   } catch {
     next(
@@ -31,4 +33,21 @@ const ensureAuth = async (
   }
 };
 
-export { ensureAuth };
+const ensureRole = (requiredRole: string) => (
+  request: TRequest,
+  response: Response,
+  next: NextFunction,
+) => {
+  const user = request.user;
+  if (!ROLES_HIERARCHY[user.role].includes(requiredRole)) {
+    next(
+      createError(403, 'Not permitted to access this resource.', {
+        expose: true,
+      }),
+    );
+    return;
+  }
+  next();
+};
+
+export { ensureAuth, ensureRole };

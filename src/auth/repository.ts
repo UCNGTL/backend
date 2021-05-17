@@ -5,18 +5,19 @@ import bcrypt from 'bcrypt';
 import createError from 'http-errors';
 import { sign, verify } from 'jsonwebtoken';
 
+import type { TStaffPersonWithoutPasswordHash } from '../staff/types';
 import config from '../utils/config';
 
-import type { JWTPayload } from './types';
-
-const generateAccessToken = async (ssn: string): Promise<string> => {
+const generateAccessToken = async (
+  staffPerson: TStaffPersonWithoutPasswordHash,
+): Promise<string> => {
   const privateKey = await fs.readFile(
     path.resolve(`./security/${config.security.accessTokenPrivateKeyFilename}`),
   );
 
   return await new Promise((resolve, reject) => {
     sign(
-      { ssn },
+      staffPerson,
       privateKey,
       { algorithm: 'RS256', expiresIn: '5m' },
       (error, accessToken) => {
@@ -29,7 +30,9 @@ const generateAccessToken = async (ssn: string): Promise<string> => {
   });
 };
 
-const generateRefreshToken = async (ssn: string): Promise<string> => {
+const generateRefreshToken = async (
+  staffPerson: TStaffPersonWithoutPasswordHash,
+): Promise<string> => {
   const privateKey = await fs.readFile(
     path.resolve(
       `./security/${config.security.refreshTokenPrivateKeyFilename}`,
@@ -38,14 +41,14 @@ const generateRefreshToken = async (ssn: string): Promise<string> => {
 
   return await new Promise((resolve, reject) => {
     sign(
-      { ssn },
+      staffPerson,
       privateKey,
       { algorithm: 'RS256', expiresIn: '24h' },
-      (error, accessToken) => {
+      (error, refreshToken) => {
         if (error) {
           reject(error);
         }
-        resolve(accessToken);
+        resolve(refreshToken);
       },
     );
   });
@@ -61,7 +64,9 @@ const passwordAndPasswordHashMatches = async (
   }
 };
 
-const verifyAccessToken = async (accessToken: string): Promise<JWTPayload> => {
+const verifyAccessToken = async (
+  accessToken: string,
+): Promise<TStaffPersonWithoutPasswordHash> => {
   const publicKey = await fs.readFile(
     path.resolve(`./security/${config.security.accessTokenPublicKeyFilename}`),
   );
@@ -73,11 +78,11 @@ const verifyAccessToken = async (accessToken: string): Promise<JWTPayload> => {
       {
         algorithms: ['RS256'],
       },
-      (error, payload: JWTPayload) => {
+      (error, { role, ssn }: TStaffPersonWithoutPasswordHash) => {
         if (error) {
           reject(error);
         }
-        resolve(payload);
+        resolve({ role, ssn });
       },
     );
   });
@@ -85,7 +90,7 @@ const verifyAccessToken = async (accessToken: string): Promise<JWTPayload> => {
 
 const verifyRefreshToken = async (
   refreshToken: string,
-): Promise<JWTPayload> => {
+): Promise<TStaffPersonWithoutPasswordHash> => {
   const publicKey = await fs.readFile(
     path.resolve(`./security/${config.security.refreshTokenPublicKeyFilename}`),
   );
@@ -97,11 +102,11 @@ const verifyRefreshToken = async (
       {
         algorithms: ['RS256'],
       },
-      (error, payload: JWTPayload) => {
+      (error, { role, ssn }: TStaffPersonWithoutPasswordHash) => {
         if (error) {
           reject(error);
         }
-        resolve(payload);
+        resolve({ role, ssn });
       },
     );
   });
