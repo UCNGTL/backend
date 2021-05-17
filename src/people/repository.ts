@@ -8,12 +8,12 @@ const getTopFiftyPeople = async () => {
 
 const getMembers = async (page: number, pageSize: number) => {
   return database.raw<IMember>(
-    `exec getMembers @page = ${page}, @pageSize = ${pageSize}`,
+    `exec dbo.getMembers @page = ${page}, @pageSize = ${pageSize}`,
   );
 };
 
 const getMember = async (ssn: string) => {
-  return database.raw<IMember>(`exec getMember @ssn = ${ssn}`);
+  return database.raw<IMember>(`exec dbo.getMember @ssn = ${ssn}`);
 };
 
 const insertMember = async (member: IMember) => {
@@ -32,7 +32,7 @@ const insertMember = async (member: IMember) => {
   } = member;
 
   return database.raw<IMember>(
-    `exec insertLibraryMember @ssn = '${ssn}', @fname = '${fname}', @lname = '${lname}', @campus = '${campus}', @isProfessor = ${isProfessor}, @address1 = '${address1}', @address2 = '${address2}', @address3 = '${address3}', @city = '${city}', @zipCode = '${zipCode}', @phoneNumber = '${phoneNumber}'`,
+    `exec dbo.insertLibraryMember @ssn = '${ssn}', @fname = '${fname}', @lname = '${lname}', @campus = '${campus}', @isProfessor = ${isProfessor}, @address1 = '${address1}', @address2 = '${address2}', @address3 = '${address3}', @city = '${city}', @zipCode = '${zipCode}', @phoneNumber = '${phoneNumber}'`,
   );
 };
 

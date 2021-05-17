@@ -8,6 +8,7 @@ import type { HttpError } from 'http-errors';
 import authRoutes from './auth/routes';
 import bookRoutes from './books/routes';
 import internalRoutes from './internal/routes';
+import loanRoutes from './loans/routes';
 import peopleRoutes from './people/routes';
 import { handleError } from './utils';
 import config from './utils/config';
@@ -25,6 +26,10 @@ app.use(authRoutes);
 app.use(internalRoutes);
 app.use(peopleRoutes);
 app.use(bookRoutes);
+<<<<<<< HEAD
+=======
+app.use(loanRoutes);
+>>>>>>> 34b50ad (added lending)
 
 app.use('*', (request: Request, response: Response, next: NextFunction) => {
   next(createError(404, 'Page does not exist.', { expose: true }));
