@@ -11,7 +11,7 @@ const router = Router();
 
 router.post(
   '/loans',
-  //   ensureAuth,
+  ensureAuth,
   async (request: Request, response: Response, next: NextFunction) => {
     try {
       const { memberId, copyId } = request.body;
