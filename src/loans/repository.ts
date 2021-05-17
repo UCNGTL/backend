@@ -21,4 +21,16 @@ const lend = async (
   );
 };
 
-export { lend };
+const returnLoan = async (
+  memberId: string,
+  copyId: number,
+  borrowDate: Date,
+  condition: string,
+) => {
+  return database.raw(
+    'exec dbo.returnLoan @borrowDate = :borrowDate, @memberId = :memberId, @copyId = :copyId, @condition = :condition',
+    { borrowDate, condition, copyId, memberId },
+  );
+};
+
+export { lend, returnLoan };
