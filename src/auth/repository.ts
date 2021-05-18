@@ -8,47 +8,27 @@ import { sign, verify } from 'jsonwebtoken';
 import type { TStaffPersonWithoutPasswordHash } from '../staff/types';
 import config from '../utils/config';
 
-const generateAccessToken = async (
+const generateToken = (type: 'accessToken' | 'refreshToken') => async (
   staffPerson: TStaffPersonWithoutPasswordHash,
 ): Promise<string> => {
+  const privateKeyFilename =
+    type === 'accessToken'
+      ? config.security.accessTokenPrivateKeyFilename
+      : config.security.refreshTokenPrivateKeyFilename;
+  const expiresIn = type === 'accessToken' ? '5m' : '24h';
   const privateKey = await fs.readFile(
-    path.resolve(`./security/${config.security.accessTokenPrivateKeyFilename}`),
+    path.resolve(`./security/${privateKeyFilename}`),
   );
-
   return await new Promise((resolve, reject) => {
     sign(
       staffPerson,
       privateKey,
-      { algorithm: 'RS256', expiresIn: '5m' },
-      (error, accessToken) => {
+      { algorithm: 'RS256', expiresIn },
+      (error, token) => {
         if (error) {
           reject(error);
         }
-        resolve(accessToken);
-      },
-    );
-  });
-};
-
-const generateRefreshToken = async (
-  staffPerson: TStaffPersonWithoutPasswordHash,
-): Promise<string> => {
-  const privateKey = await fs.readFile(
-    path.resolve(
-      `./security/${config.security.refreshTokenPrivateKeyFilename}`,
-    ),
-  );
-
-  return await new Promise((resolve, reject) => {
-    sign(
-      staffPerson,
-      privateKey,
-      { algorithm: 'RS256', expiresIn: '24h' },
-      (error, refreshToken) => {
-        if (error) {
-          reject(error);
-        }
-        resolve(refreshToken);
+        resolve(token);
       },
     );
   });
@@ -64,16 +44,19 @@ const passwordAndPasswordHashMatches = async (
   }
 };
 
-const verifyAccessToken = async (
-  accessToken: string,
+const verifyToken = (type: 'accessToken' | 'refreshToken') => async (
+  token: string,
 ): Promise<TStaffPersonWithoutPasswordHash> => {
+  const publicKeyFilename =
+    type === 'accessToken'
+      ? config.security.accessTokenPublicKeyFilename
+      : config.security.refreshTokenPublicKeyFilename;
   const publicKey = await fs.readFile(
-    path.resolve(`./security/${config.security.accessTokenPublicKeyFilename}`),
+    path.resolve(`./security/${publicKeyFilename}`),
   );
-
   return await new Promise((resolve, reject) => {
     verify(
-      accessToken,
+      token,
       publicKey,
       {
         algorithms: ['RS256'],
@@ -88,29 +71,10 @@ const verifyAccessToken = async (
   });
 };
 
-const verifyRefreshToken = async (
-  refreshToken: string,
-): Promise<TStaffPersonWithoutPasswordHash> => {
-  const publicKey = await fs.readFile(
-    path.resolve(`./security/${config.security.refreshTokenPublicKeyFilename}`),
-  );
-
-  return await new Promise((resolve, reject) => {
-    verify(
-      refreshToken,
-      publicKey,
-      {
-        algorithms: ['RS256'],
-      },
-      (error, { role, ssn }: TStaffPersonWithoutPasswordHash) => {
-        if (error) {
-          reject(error);
-        }
-        resolve({ role, ssn });
-      },
-    );
-  });
-};
+const generateAccessToken = generateToken('accessToken');
+const generateRefreshToken = generateToken('refreshToken');
+const verifyAccessToken = verifyToken('accessToken');
+const verifyRefreshToken = verifyToken('refreshToken');
 
 export {
   generateAccessToken,

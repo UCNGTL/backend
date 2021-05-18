@@ -1,8 +1,6 @@
-import type { Request } from 'express';
+import type { TRequest } from '../utils/types';
 
-import type { TStaffPerson } from '../staff/types';
-
-type TLoginRequest = Request<
+type TLoginRequest = TRequest<
   {},
   {},
   {
@@ -11,13 +9,12 @@ type TLoginRequest = Request<
   }
 >;
 
-type TRefreshTokenRequest = Exclude<TStaffPerson, 'passwordHash'> &
-  Request<
-    {},
-    {},
-    {
-      refreshToken: string;
-    }
-  >;
+type TRefreshTokenRequest = TRequest<
+  {},
+  {},
+  {
+    refreshToken: string;
+  }
+>;
 
 export { TLoginRequest, TRefreshTokenRequest };
