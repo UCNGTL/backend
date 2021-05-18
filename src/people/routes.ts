@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 
 import { ensureAuth, ensureRole } from '../auth/middlewares';
 import { createResponsePayload } from '../utils';
@@ -9,9 +10,7 @@ import {
   insertMember,
   getTopFiftyPeople,
 } from './repository';
-
 import type { IMember } from './types';
-import type { Request, Response, NextFunction } from 'express';
 
 const router = Router();
 

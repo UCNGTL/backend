@@ -1,11 +1,10 @@
 import { Router } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 
 import { ensureAuth } from '../auth/middlewares';
 import { createResponsePayload } from '../utils';
 
 import { lend, returnLoan } from './repository';
-
-import type { Request, Response, NextFunction } from 'express';
 
 const router = Router();
 

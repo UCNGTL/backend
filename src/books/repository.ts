@@ -20,7 +20,11 @@ const getBooksWithFilterValues = async (parameters: IFilter) => {
     .modify(function (queryBuilder) {
       for (const [key, value] of Object.entries(parameters)) {
         if (value !== undefined && key !== 'pageNumber') {
-          void queryBuilder.where(`${key}`, 'like', `%${value}%`);
+          let localKey = key;
+          if (key === 'subject') {
+            localKey = 'name';
+          }
+          void queryBuilder.where(localKey, 'like', `%${value}%`);
         }
       }
     })

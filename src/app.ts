@@ -1,7 +1,10 @@
 import compression from 'compression';
+import cors from 'cors';
 import express from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import helmet from 'helmet';
 import createError from 'http-errors';
+import type { HttpError } from 'http-errors';
 
 import authRoutes from './auth/routes';
 import bookRoutes from './books/routes';
@@ -11,14 +14,12 @@ import peopleRoutes from './people/routes';
 import { handleError } from './utils';
 import config from './utils/config';
 
-import type { NextFunction, Request, Response } from 'express';
-import type { HttpError } from 'http-errors';
-
 const app = express();
 
 app.set('port', config.port);
 
 app.use(helmet());
+app.use(cors());
 app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
