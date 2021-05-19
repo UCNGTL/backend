@@ -12,12 +12,14 @@ import loanRoutes from './loans/routes';
 import membersRoutes from './members/routes';
 import { handleError } from './utils';
 import config from './utils/config';
+import cors from 'cors';
 
 const app = express();
 
 app.set('port', config.port);
 
 app.use(helmet());
+app.use(cors())
 app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
