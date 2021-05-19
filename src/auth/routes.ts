@@ -12,7 +12,12 @@ import {
   passwordAndPasswordHashMatches,
   verifyRefreshToken,
 } from './repository';
-import type { TLoginRequest, TRefreshTokenRequest } from './types';
+import type {
+  TLoginRequest,
+  TLoginResponsePayload,
+  TRefreshTokenRequest,
+  TRefreshTokenResponsePayload,
+} from './types';
 
 const router = Router();
 
@@ -36,7 +41,9 @@ router.post(
       const refreshToken = await generateRefreshToken(staffPerson);
       await redis.set(refreshToken, ssn);
       response.send(
-        createResponsePayload({ payload: { accessToken, refreshToken } }),
+        createResponsePayload<TLoginResponsePayload>({
+          payload: { accessToken, refreshToken },
+        }),
       );
     } catch (error) {
       next(error);
@@ -75,7 +82,11 @@ router.post(
       }
 
       const accessToken = await generateAccessToken(staffPerson);
-      response.send(createResponsePayload({ payload: { accessToken } }));
+      response.send(
+        createResponsePayload<TRefreshTokenResponsePayload>({
+          payload: { accessToken },
+        }),
+      );
     } catch (error) {
       next(error);
     }

@@ -1,4 +1,4 @@
-import type { Request } from 'express';
+import type { Response, Request } from 'express';
 
 type TLoginRequest = Request<
   {},
@@ -9,6 +9,11 @@ type TLoginRequest = Request<
   }
 >;
 
+type TLoginResponsePayload = {
+  accessToken: string;
+  refreshToken: string;
+};
+
 type TRefreshTokenRequest = Request<
   {},
   {},
@@ -17,4 +22,13 @@ type TRefreshTokenRequest = Request<
   }
 >;
 
-export { TLoginRequest, TRefreshTokenRequest };
+type TRefreshTokenResponsePayload = {
+  accessToken: string;
+};
+
+export {
+  TLoginRequest,
+  TLoginResponsePayload,
+  TRefreshTokenRequest,
+  TRefreshTokenResponsePayload,
+};

@@ -6,4 +6,10 @@ declare global {
       user: TStaffPersonWithoutPasswordHash
     }
   }
+  namespace NodeJS {
+    interface Global {
+      ACCESS_TOKEN: string;
+      REFRESH_TOKEN: string;
+    }
+  }
 }

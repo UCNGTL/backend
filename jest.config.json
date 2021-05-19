@@ -8,8 +8,7 @@
   "setupFilesAfterEnv": ["./jest/setup.redis-mock.ts"],
   "silent": true,
   "testEnvironment": "node",
-  "testMatch": ["**/tests.[jt]s"],
-  "testPathIgnorePatterns": ["dist"],
+  "testPathIgnorePatterns": ["./dist", "./src/__tests__/utils.ts"],
   "transform": {
     "^.+\\.(ts|tsx)$": "ts-jest"
   },

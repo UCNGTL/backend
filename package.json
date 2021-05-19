@@ -56,8 +56,8 @@
     "build:watch": "tsc -w",
     "serve": "nodemon dist/server.js",
     "start": "concurrently \"npm:build:watch\" \"npm:serve\"",
-    "test": "jest --forceExit --detectOpenHandles",
-    "test:coverage": "jest --forceExit --detectOpenHandles --coverage"
+    "test": "jest --forceExit",
+    "test:coverage": "jest --forceExit --coverage"
   },
   "version": "0.1.0"
 }

@@ -23,6 +23,7 @@
     "@typescript-eslint/unbound-method": "off",
     "consistent-return": "off",
     "filenames/match-exported": "off",
+    "filenames/match-regex": "off",
     "import/order": [
       "error",
       {
@@ -33,8 +34,11 @@
         "newlines-between": "always"
       }
     ],
+    "import/unambiguous": "off",
     "newline-before-return": "off",
     "node/callback-return": "off",
+    "node/no-process-env": "off",
+    "node/no-unpublished-import": "off",
     "unicorn/prevent-abbreviations": "off"
   }
 }
