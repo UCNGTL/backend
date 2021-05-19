@@ -8,10 +8,10 @@
     "noImplicitAny": true,
     "outDir": "dist",
     "paths": {
-      "*": ["node_modules/*"]
+      "*": ["./node_modules/*"]
     },
     "sourceMap": true,
-    "target": "es6"
+    "target": "es6",
   },
-  "include": ["src/**/*", "jest/**/*"]
+  "include": ["./src/**/*", "./jest/**/*"]
 }

@@ -3,8 +3,7 @@ import { Router } from 'express';
 import createError from 'http-errors';
 
 import { getStaffPersonBySsn } from '../staff/repository';
-import { createResponsePayload } from '../utils';
-import * as redis from '../utils/redis';
+import { createResponsePayload, redis } from '../utils';
 
 import {
   generateAccessToken,

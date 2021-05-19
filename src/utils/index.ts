@@ -1,6 +1,5 @@
-import config from './config';
-import createResponsePayload from './createResponsePayload';
-import database from './database';
-import handleError from './handleError';
-
-export { config, createResponsePayload, database, handleError };
+export { default as config } from './config';
+export { default as createResponsePayload } from './createResponsePayload';
+export { default as database } from './database';
+export { default as handleError } from './handleError';
+export * as redis from './redis';

@@ -5,10 +5,9 @@
     }
   },
   "moduleFileExtensions": ["ts", "js"],
-  "setupFilesAfterEnv": ["./jest/setup.redis-mock.ts"],
-  "silent": true,
+  "setupFilesAfterEnv": ["./src/__tests__/setup.ts"],
   "testEnvironment": "node",
-  "testPathIgnorePatterns": ["./dist", "./src/__tests__/utils.ts"],
+  "testPathIgnorePatterns": ["./dist", "./src/__tests__/utils.ts", "./src/__tests__/setup.ts"],
   "transform": {
     "^.+\\.(ts|tsx)$": "ts-jest"
   },

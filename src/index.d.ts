@@ -1,4 +1,5 @@
 import { TStaffPersonWithoutPasswordHash } from './staff/types';
+import { TConfig } from './utils/config';
 
 declare global {
   namespace Express {
@@ -8,8 +9,11 @@ declare global {
   }
   namespace NodeJS {
     interface Global {
-      ACCESS_TOKEN: string;
-      REFRESH_TOKEN: string;
+      CONFIG: TConfig;
+      CHIEF_LIBRARIAN_ACCESS_TOKEN: string;
+      CHIEF_LIBRARIAN_REFRESH_TOKEN: string;
+      CHECK_OUT_STAFF_ACCESS_TOKEN: string;
+      CHECK_OUT_STAFF_REFRESH_TOKEN: string;
     }
   }
 }

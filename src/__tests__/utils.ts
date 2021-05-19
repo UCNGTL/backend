@@ -1,21 +1,35 @@
 import supertest from 'supertest';
 
 import app from '../app';
-import type { TLoginResponsePayload } from '../auth/types';
+import { config, database, redis } from '../utils';
 
-const getAuthTokens = async (): Promise<TLoginResponsePayload> => {
-  const response = await supertest(app)
+const placeAuthTokensIntoGlobalNamespace = async () => {
+  let response = await supertest(app)
     .post('/auth/login')
     .send({
-      password: '49E7NJMw',
-      ssn: 'AQJOAQD1',
+      password: config.test.chiefLibrarianPassword,
+      ssn: config.test.chiefLibrarianSsn,
     })
     .expect(200);
 
-  return {
-    accessToken: response.body.payload.accessToken,
-    refreshToken: response.body.payload.refreshToken,
-  };
+  global.CHIEF_LIBRARIAN_ACCESS_TOKEN = response.body.payload.accessToken;
+  global.CHIEF_LIBRARIAN_REFRESH_TOKEN = response.body.payload.refreshToken;
+
+  response = await supertest(app)
+    .post('/auth/login')
+    .send({
+      password: config.test.checkOutStaffPassword,
+      ssn: config.test.checkOutStaffSsn,
+    })
+    .expect(200);
+
+  global.CHECK_OUT_STAFF_ACCESS_TOKEN = response.body.payload.accessToken;
+  global.CHECK_OUT_STAFF_REFRESH_TOKEN = response.body.payload.refreshToken;
 };
 
-export { getAuthTokens };
+const tearDownConnections = async () => {
+  redis.client.quit();
+  await database.destroy();
+};
+
+export { placeAuthTokensIntoGlobalNamespace, tearDownConnections };

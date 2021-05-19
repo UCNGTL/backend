@@ -40,7 +40,15 @@ const passwordAndPasswordHashMatches = async (
 ) => {
   const isMatch = await bcrypt.compare(password, passwordHash);
   if (!isMatch) {
-    throw createError(401, 'Provided password is incorrect', { expose: true });
+    throw createError(401, 'Login failed.', {
+      errors: [
+        {
+          message: 'Provided password is incorrect.',
+          source: 'password',
+        },
+      ],
+      expose: true,
+    });
   }
 };
 

@@ -4,12 +4,13 @@ import redis from 'redis';
 
 import config from './config';
 
-const connection = redis.createClient({
+const client = redis.createClient({
   host: config.redis.host,
   port: config.redis.port,
 });
 
-const get = util.promisify(connection.get).bind(connection);
-const set = util.promisify(connection.set).bind(connection);
+const del = util.promisify(client.del).bind(client);
+const get = util.promisify(client.get).bind(client);
+const set = util.promisify(client.set).bind(client);
 
-export { get, set };
+export { client, del, get, set };

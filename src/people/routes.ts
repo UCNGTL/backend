@@ -17,7 +17,7 @@ const router = Router();
 router.get(
   '/people/top-50-people',
   ensureAuth,
-  ensureRole('references librarian'),
+  ensureRole('chief librarian'),
   async (request: Request, response: Response) => {
     const data = await getTopFiftyPeople();
     response.json(createResponsePayload({ payload: data }));
