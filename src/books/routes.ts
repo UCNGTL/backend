@@ -9,8 +9,8 @@ import type { TGetBooksRequest } from './types';
 const router = Router();
 
 router.get('/books', async (request: TGetBooksRequest, response: Response) => {
-  const { pageNumber, ...filters } = request.query;
-  const { data, pagination } = await getBooks({ pageNumber }, filters);
+  const { page, ...filters } = request.query;
+  const { data, pagination } = await getBooks({ page }, filters);
   response.json(createResponsePayload({ payload: { data, pagination } }));
 });
 

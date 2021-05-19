@@ -37,7 +37,7 @@ type TGetBooksFilter = {
 };
 
 type TGetBooksPagination = {
-  pageNumber?: string;
+  page?: string;
 };
 
 export type {
