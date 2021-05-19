@@ -51,15 +51,8 @@ const getBooks = async (
         authors: [],
         subjects: [],
       };
-
-      if (!entry.authors.includes(author)) {
-        entry.authors.push(author);
-      }
-
-      if (!entry.subjects.includes(subject)) {
-        entry.subjects.push(subject);
-      }
-
+      entry.authors.push(author);
+      entry.subjects.push(subject);
       books[book.isbn] = entry;
       return books;
     },

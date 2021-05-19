@@ -1,4 +1,5 @@
 import type { Request } from 'express';
+import type { IBasePagination } from 'knex-paginate';
 
 type TGetBooksRequest = Request<
   {},
@@ -6,6 +7,11 @@ type TGetBooksRequest = Request<
   {},
   TGetBooksFilter & TGetBooksPagination
 >;
+
+type TGetBooksResponsePayload = {
+  data: TBookWithAuthorsAndSubjects[];
+  pagination: IBasePagination;
+};
 
 type TBook = {
   isbn: string;
@@ -47,4 +53,5 @@ export type {
   TGetBooksFilter,
   TGetBooksPagination,
   TGetBooksRequest,
+  TGetBooksResponsePayload,
 };
