@@ -1,9 +1,18 @@
 import database from '../utils/database';
 
-import type { IFilter, IBookWithAuthorsSubjects } from './types';
+import type {
+  TBook,
+  TBooksNormalized,
+  TBookWithAuthorsAndSubjects,
+  TGetBooksFilter,
+  TGetBooksPagination,
+} from './types';
 
-const getBooksWithFilterValues = async (parameters: IFilter) => {
-  const books = await database<IBookWithAuthorsSubjects>('dbo.books')
+const getBooks = async (
+  pagination: TGetBooksPagination,
+  filters: TGetBooksFilter,
+) => {
+  const queryResult = await database('dbo.books')
     .select(
       'isbn',
       'title',
@@ -18,7 +27,7 @@ const getBooksWithFilterValues = async (parameters: IFilter) => {
     .rightJoin('bookAuthors', 'books.isbn', 'bookAuthors.bookIsbn')
     .rightJoin('bookSubjects', 'books.isbn', 'bookSubjects.bookIsbn')
     .modify(function (queryBuilder) {
-      for (const [key, value] of Object.entries(parameters)) {
+      for (const [key, value] of Object.entries(filters)) {
         if (value !== undefined && key !== 'pageNumber') {
           let localKey = key;
           if (key === 'subject') {
@@ -29,24 +38,36 @@ const getBooksWithFilterValues = async (parameters: IFilter) => {
       }
     })
     .orderBy('isbn', 'asc')
-    .paginate({ currentPage: parameters.pageNumber || 1, perPage: 50 });
+    .paginate<TBook[]>({
+      currentPage: Number.parseInt(pagination.pageNumber, 10) || 1,
+      perPage: 50,
+    });
 
-  const response = books.data.reduce((result, row) => {
-    result[row.isbn] = result[row.isbn] || {
-      ...row,
-      authors: [],
-      subjects: [],
-    };
+  const books = queryResult.data.reduce(
+    (books: TBooksNormalized, { author, subject, ...book }: TBook) => {
+      const entry = books[book.isbn] || {
+        ...book,
+        authors: [],
+        subjects: [],
+      };
 
-    result[row.isbn].subjects.push(row.subject);
-    result[row.isbn].authors.push(row.author);
-    result[row.isbn].subjects = Array.from(new Set(result[row.isbn].subjects));
-    result[row.isbn].authors = Array.from(new Set(result[row.isbn].authors));
+      if (!entry.authors.includes(author)) {
+        entry.authors.push(author);
+      }
 
-    return result;
-  }, {});
+      if (!entry.subjects.includes(subject)) {
+        entry.subjects.push(subject);
+      }
 
-  return { data: Object.values(response), pagination: books.pagination };
+      books[book.isbn] = entry;
+      return books;
+    },
+    {},
+  );
+
+  const booksValues: TBookWithAuthorsAndSubjects[] = Object.values(books);
+
+  return { data: booksValues, pagination: books.pagination };
 };
 
-export { getBooksWithFilterValues };
+export { getBooks };

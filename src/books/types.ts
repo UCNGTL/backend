@@ -1,4 +1,13 @@
-type IBook = {
+import type { Request } from 'express';
+
+type TGetBooksRequest = Request<
+  {},
+  {},
+  {},
+  TGetBooksFilter & TGetBooksPagination
+>;
+
+type TBook = {
   isbn: string;
   title: string;
   description: string;
@@ -6,25 +15,36 @@ type IBook = {
   language: string;
   bindingType: string;
   itemId: number;
-};
-
-type IAuthor = {
   author: string;
-};
-
-type ISubject = {
   subject: string;
 };
 
-type IBookWithAuthorsSubjects = IAuthor & IBook & ISubject;
+type TBooksNormalized = {
+  [isbn: string]: TBookWithAuthorsAndSubjects;
+};
 
-type IFilter = {
+type TBookWithAuthorsAndSubjects = Omit<TBook, 'author' | 'subject'> & {
+  authors: string[];
+  subjects: string[];
+};
+
+type TGetBooksFilter = {
   language?: string;
   subject?: string;
   edition?: string;
   lname?: string;
   bindingType?: string;
-  pageNumber?: number;
 };
 
-export type { IBook, IFilter, IBookWithAuthorsSubjects };
+type TGetBooksPagination = {
+  pageNumber?: string;
+};
+
+export type {
+  TBook,
+  TBooksNormalized,
+  TBookWithAuthorsAndSubjects,
+  TGetBooksFilter,
+  TGetBooksPagination,
+  TGetBooksRequest,
+};
