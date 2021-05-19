@@ -27,7 +27,7 @@ router.get(
 );
 
 router.get(
-  '/people/members',
+  '/members',
   ensureAuth,
   ensureRole(ROLES.referenceLibrarian),
   async (request: Request, response: Response, next: NextFunction) => {
@@ -49,7 +49,7 @@ router.get(
 );
 
 router.get(
-  '/people/members/:ssn',
+  '/members/:ssn',
   ensureAuth,
   ensureRole(ROLES.referenceLibrarian),
   async (request: Request, response: Response, next: NextFunction) => {
@@ -64,7 +64,7 @@ router.get(
 );
 
 router.post(
-  '/people/members',
+  '/members',
   ensureAuth,
   ensureRole(ROLES.referenceLibrarian),
   async (request: Request, response: Response, next: NextFunction) => {
