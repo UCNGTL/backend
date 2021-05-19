@@ -14,6 +14,7 @@ import type { IMember } from './types';
 
 const router = Router();
 
+// @TODO: Remove this once we have correct permission system on routes
 router.get(
   '/people/top-50-people',
   ensureAuth,

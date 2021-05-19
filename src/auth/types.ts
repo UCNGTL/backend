@@ -1,4 +1,4 @@
-import type { Response, Request } from 'express';
+import type { Request } from 'express';
 
 type TLoginRequest = Request<
   {},
