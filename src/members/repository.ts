@@ -1,22 +1,51 @@
 import database from '../utils/database';
 
-import type { IPerson, IMember } from './types';
+import type {
+  TMember,
+  TGetMembersPagination,
+  TMembersNormalized,
+} from './types';
 
-const getTopFiftyPeople = async () => {
-  return await database<IPerson>('dbo.people').limit(50).select('*');
-};
-
-const getMembers = async (page: number, pageSize: number) => {
-  return database.raw<IMember>(
-    `exec dbo.getMembers @page = ${page}, @pageSize = ${pageSize}`,
-  );
+const getMembers = async (pagination: TGetMembersPagination) => {
+  const queryResult = await database('members')
+    .select(
+      'members.id as memberId',
+      'members.campus',
+      'members.isProfessor',
+      'personAddresses.address1',
+      'personAddresses.address2',
+      'personAddresses.address3',
+      'personAddresses.city',
+      'personAddresses.zipCode',
+      'people.ssn',
+      'people.fname',
+      'people.lname',
+      'personPhoneNumbers.phoneNumber',
+    )
+    .leftJoin(
+      'personAddresses',
+      'members.personSsn',
+      'personAddresses.personSsn',
+    )
+    .leftJoin('people', 'people.ssn', 'members.personSsn')
+    .leftJoin(
+      'personPhoneNumbers',
+      'personPhoneNumbers.personSsn',
+      'members.personSsn',
+    )
+    .orderBy('people.ssn', 'asc')
+    .paginate<TMember[]>({
+      currentPage: Number.parseInt(pagination.page, 10) || 1,
+      perPage: 50,
+    });
+  return queryResult;
 };
 
 const getMember = async (ssn: string) => {
-  return database.raw<IMember>(`exec dbo.getMember @ssn = ${ssn}`);
+  return database.raw<TMember>(`exec dbo.getMember @ssn = ${ssn}`);
 };
 
-const insertMember = async (member: IMember) => {
+const insertMember = async (member: TMember) => {
   const {
     address1,
     address2,
@@ -31,9 +60,13 @@ const insertMember = async (member: IMember) => {
     zipCode,
   } = member;
 
-  return database.raw<IMember>(
+  await database.raw<TMember>(
     `exec dbo.insertLibraryMember @ssn = '${ssn}', @fname = '${fname}', @lname = '${lname}', @campus = '${campus}', @isProfessor = ${isProfessor}, @address1 = '${address1}', @address2 = '${address2}', @address3 = '${address3}', @city = '${city}', @zipCode = '${zipCode}', @phoneNumber = '${phoneNumber}'`,
   );
 };
 
-export { getTopFiftyPeople, getMembers, getMember, insertMember };
+const deleteLibraryMember = async (ssn: TMember['ssn']) => {
+  await database.raw(`exec dbo.deleteLibraryMember @ssn = '${ssn}'`);
+};
+
+export { getMembers, getMember, insertMember, deleteLibraryMember };

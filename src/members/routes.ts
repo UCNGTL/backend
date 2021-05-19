@@ -5,43 +5,24 @@ import { ensureAuth, ensureRole } from '../auth/middlewares';
 import { createResponsePayload } from '../utils';
 import { ROLES } from '../utils/rolesHierarchy';
 
-import {
-  getMembers,
-  getMember,
-  insertMember,
-  getTopFiftyPeople,
-} from './repository';
-import type { IMember } from './types';
+import { getMembers, getMember, insertMember } from './repository';
+import type { TMember, TGetMembersRequest } from './types';
 
 const router = Router();
 
-// @TODO: Remove this once we have correct permission system on routes
-router.get(
-  '/people/top-50-people',
-  ensureAuth,
-  ensureRole(ROLES.referenceLibrarian),
-  async (request: Request, response: Response) => {
-    const data = await getTopFiftyPeople();
-    response.json(createResponsePayload({ payload: data }));
-  },
-);
-
 router.get(
   '/members',
-  ensureAuth,
-  ensureRole(ROLES.referenceLibrarian),
-  async (request: Request, response: Response, next: NextFunction) => {
+  // ensureAuth,
+  // ensureRole(ROLES.referenceLibrarian),
+  async (
+    request: TGetMembersRequest,
+    response: Response,
+    next: NextFunction,
+  ) => {
     try {
-      const { page = '1', limit = '20' } = request.query;
-      let data;
-
-      if (typeof page === 'string' && typeof limit === 'string') {
-        const parsedPage = Number.parseInt(page, 10);
-        let parsedLimit = Number.parseInt(limit, 10);
-        parsedLimit = parsedLimit > 100 ? 100 : parsedLimit;
-        data = await getMembers(parsedPage, parsedLimit);
-      }
-      response.json(createResponsePayload({ payload: data }));
+      const { page } = request.query;
+      const { data, pagination } = await getMembers({ page });
+      response.json(createResponsePayload({ payload: { data, pagination } }));
     } catch (error) {
       next(error);
     }
@@ -83,7 +64,7 @@ router.post(
         zipCode,
       } = request.body;
 
-      const member: IMember = {
+      const member: TMember = {
         address1,
         address2,
         address3,

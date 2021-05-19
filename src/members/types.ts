@@ -1,22 +1,39 @@
-type IPerson = {
-  fname: string;
-  lname: string;
-  ssn: string;
-};
+import type { Request } from 'express';
 
-type IPersonAddress = {
-  address1: string;
-  address2: string;
-  address3: string;
-  city: string;
-  zipCode: string;
-};
+import type {
+  TPerson,
+  TPersonAddress,
+  TPersonPhoneNumber,
+} from '../utils/types';
 
-type IMember = IPerson &
-  IPersonAddress & {
+type TMember = TPerson &
+  TPersonAddress &
+  TPersonPhoneNumber & {
     campus: string;
     isProfessor: boolean;
-    phoneNumber: string;
   };
 
-export type { IPerson, IMember };
+type TGetMembersPagination = {
+  page?: string;
+};
+
+type TGetMembersRequest = Request<{}, {}, {}, TGetMembersPagination>;
+
+type TMembersNormalized = {
+  [ssn: string]: TMemberWithAddressesAndPhoneNumbers;
+};
+
+type TMemberWithAddressesAndPhoneNumbers = Omit<
+  TMember,
+  'address1' | 'address2' | 'address3' | 'city' | 'zipCode'
+> & {
+  addresses: TPersonAddress[];
+  phoneNumbers: string[];
+};
+
+export type {
+  TMember,
+  TGetMembersPagination,
+  TGetMembersRequest,
+  TMembersNormalized,
+};

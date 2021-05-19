@@ -1,6 +1,8 @@
+import type { TPerson } from '../utils/types';
+
 type TStaffPerson = {
+  ssn: TPerson['ssn'];
   role: string;
-  ssn: string;
   passwordHash: Buffer;
 };
 
