@@ -25,7 +25,7 @@ type TMembersNormalized = {
 
 type TMemberWithAddressesAndPhoneNumbers = Omit<
   TMember,
-  'address1' | 'address2' | 'address3' | 'city' | 'zipCode'
+  'address1' | 'address2' | 'address3' | 'city' | 'phoneNumber' | 'zipCode'
 > & {
   addresses: TPersonAddress[];
   phoneNumbers: string[];
@@ -36,4 +36,5 @@ export type {
   TGetMembersPagination,
   TGetMembersRequest,
   TMembersNormalized,
+  TMemberWithAddressesAndPhoneNumbers,
 };

@@ -1,6 +1,12 @@
 import database from '../utils/database';
+import type { TPersonAddress } from '../utils/types';
 
-import type { TMember, TGetMembersPagination } from './types';
+import type {
+  TMember,
+  TGetMembersPagination,
+  TMembersNormalized,
+  TMemberWithAddressesAndPhoneNumbers,
+} from './types';
 
 const getMembers = async (pagination: TGetMembersPagination) => {
   const queryResult = await database('members')
@@ -34,7 +40,38 @@ const getMembers = async (pagination: TGetMembersPagination) => {
       currentPage: Number.parseInt(pagination.page, 10) || 1,
       perPage: 50,
     });
-  return queryResult;
+
+  const members = queryResult.data.reduce(
+    (
+      members: TMembersNormalized,
+      {
+        address1,
+        address2,
+        address3,
+        zipCode,
+        city,
+        phoneNumber,
+        ...member
+      }: TMember,
+    ) => {
+      const entry = members[member.ssn] || {
+        ...member,
+        addresses: [] as TPersonAddress[],
+        phoneNumbers: [] as string[],
+      };
+      entry.addresses.push({ address1, address2, address3, city, zipCode });
+      entry.phoneNumbers.push(phoneNumber);
+      members[member.ssn] = entry;
+      return members;
+    },
+    {},
+  );
+
+  const membersValues: TMemberWithAddressesAndPhoneNumbers[] = Object.values(
+    members,
+  );
+
+  return { data: membersValues, pagination: queryResult.pagination };
 };
 
 const getMember = async (ssn: string) => {
