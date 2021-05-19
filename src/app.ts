@@ -1,5 +1,4 @@
 import compression from 'compression';
-import cors from 'cors';
 import express from 'express';
 import type { NextFunction, Request, Response } from 'express';
 import helmet from 'helmet';
@@ -10,7 +9,7 @@ import authRoutes from './auth/routes';
 import bookRoutes from './books/routes';
 import internalRoutes from './internal/routes';
 import loanRoutes from './loans/routes';
-import peopleRoutes from './people/routes';
+import membersRoutes from './members/routes';
 import { handleError } from './utils';
 import config from './utils/config';
 
@@ -19,14 +18,13 @@ const app = express();
 app.set('port', config.port);
 
 app.use(helmet());
-app.use(cors());
 app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(authRoutes);
 app.use(internalRoutes);
-app.use(peopleRoutes);
+app.use(membersRoutes);
 app.use(bookRoutes);
 app.use(loanRoutes);
 
