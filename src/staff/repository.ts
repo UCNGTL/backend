@@ -8,12 +8,12 @@ const getStaffPersonBySsn = async (
   ssn: string,
   throwIfNotFound = true,
 ): Promise<TStaffPerson> => {
-  const result = await database('dbo.staff')
+  const result = (await database('dbo.staff')
     .select('role', 'personSsn as ssn', 'passwordHash')
     .where({
       personSsn: ssn,
     })
-    .first();
+    .first()) as TStaffPerson;
   if (!result && throwIfNotFound) {
     throw createError(404, `Staff person with ssn "${ssn}" does not exist.`, {
       expose: true,

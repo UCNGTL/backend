@@ -19,6 +19,7 @@
         "checksVoidReturn": false
       }
     ],
+    "@typescript-eslint/no-shadow": "off",
     "@typescript-eslint/unbound-method": "off",
     "consistent-return": "off",
     "filenames/match-exported": "off",

@@ -1,13 +1,12 @@
-import type { NextFunction, Response } from 'express';
+import type { NextFunction, Response, Request } from 'express';
 import createError from 'http-errors';
 
 import ROLES_HIERARCHY from '../utils/rolesHierarchy';
-import type { TRequest } from '../utils/types';
 
 import { verifyAccessToken } from './repository';
 
 const ensureAuth = async (
-  request: TRequest,
+  request: Request,
   response: Response,
   next: NextFunction,
 ) => {
@@ -34,7 +33,7 @@ const ensureAuth = async (
 };
 
 const ensureRole = (requiredRole: string) => (
-  request: TRequest,
+  request: Request,
   response: Response,
   next: NextFunction,
 ) => {

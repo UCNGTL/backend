@@ -1,6 +1,6 @@
-import type { TRequest } from '../utils/types';
+import type { Request } from 'express';
 
-type TLoginRequest = TRequest<
+type TLoginRequest = Request<
   {},
   {},
   {
@@ -9,7 +9,7 @@ type TLoginRequest = TRequest<
   }
 >;
 
-type TRefreshTokenRequest = TRequest<
+type TRefreshTokenRequest = Request<
   {},
   {},
   {
