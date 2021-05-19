@@ -1,0 +1,17 @@
+{
+  "globals": {
+    "ts-jest": {
+      "tsconfig": "tsconfig.json"
+    }
+  },
+  "moduleFileExtensions": ["ts", "js"],
+  "setupFilesAfterEnv": ["./jest/setup.redis-mock.ts"],
+  "silent": true,
+  "testEnvironment": "node",
+  "testMatch": ["**/tests.[jt]s"],
+  "testPathIgnorePatterns": ["dist"],
+  "transform": {
+    "^.+\\.(ts|tsx)$": "ts-jest"
+  },
+  "verbose": true
+}

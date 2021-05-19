@@ -11,7 +11,7 @@ const router = Router();
 
 router.get(
   '/books',
-  ensureAuth,
+  // ensureAuth,
   async (request: TGetBooksRequest, response: Response) => {
     const { pageNumber, ...filters } = request.query;
     const data = await getBooks({ pageNumber }, filters);
