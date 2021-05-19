@@ -67,7 +67,7 @@ const getBooks = async (
 
   const booksValues: TBookWithAuthorsAndSubjects[] = Object.values(books);
 
-  return { data: booksValues, pagination: books.pagination };
+  return { data: booksValues, pagination: queryResult.pagination };
 };
 
 export { getBooks };
