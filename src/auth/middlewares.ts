@@ -1,7 +1,7 @@
 import type { NextFunction, Response, Request } from 'express';
 import createError from 'http-errors';
 
-import ROLES_HIERARCHY from '../utils/rolesHierarchy';
+import { ROLES_HIERARCHY } from '../utils/rolesHierarchy';
 
 import { verifyAccessToken } from './repository';
 

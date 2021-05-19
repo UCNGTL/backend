@@ -2,20 +2,25 @@ type TRolesHierarchy = {
   [key: string]: string[];
 };
 
-const ROLES_HIERARCHY: TRolesHierarchy = {
-  'check-out staff': ['check-out staff'],
+export enum ROLES {
+  chiefLibrarian = 'chief librarian',
+  departmentalAssociateLibrarian = 'departmental associate librarian',
+  checkOutStaff = 'check-out staff',
+  referenceLibrarian = 'reference librarian',
+}
+
+export const ROLES_HIERARCHY: TRolesHierarchy = {
+  'check-out staff': [ROLES.checkOutStaff],
   'chief librarian': [
-    'chief librarian',
-    'departmental associate librarian',
-    'check-out staff',
-    'reference librarian',
+    ROLES.chiefLibrarian,
+    ROLES.departmentalAssociateLibrarian,
+    ROLES.checkOutStaff,
+    ROLES.referenceLibrarian,
   ],
   'departmental associate librarian': [
-    'departmental associate librarian',
-    'check-out staff',
-    'reference librarian',
+    ROLES.departmentalAssociateLibrarian,
+    ROLES.checkOutStaff,
+    ROLES.referenceLibrarian,
   ],
-  'reference librarian': ['reference librarian', 'check-out staff'],
+  'reference librarian': [ROLES.checkOutStaff, ROLES.referenceLibrarian],
 };
-
-export default ROLES_HIERARCHY;

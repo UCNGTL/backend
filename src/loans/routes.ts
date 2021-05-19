@@ -1,8 +1,9 @@
 import { Router } from 'express';
 import type { Request, Response, NextFunction } from 'express';
 
-import { ensureAuth } from '../auth/middlewares';
+import { ensureAuth, ensureRole } from '../auth/middlewares';
 import { createResponsePayload } from '../utils';
+import { ROLES } from '../utils/rolesHierarchy';
 
 import { lend, returnLoan } from './repository';
 
@@ -11,6 +12,7 @@ const router = Router();
 router.post(
   '/loans',
   ensureAuth,
+  ensureRole(ROLES.checkOutStaff),
   async (request: Request, response: Response, next: NextFunction) => {
     try {
       const { memberId, copyId } = request.body;
@@ -26,7 +28,8 @@ router.post(
 
 router.patch(
   '/loans/return',
-  //   ensureAuth,
+  ensureAuth,
+  ensureRole(ROLES.checkOutStaff),
   async (request: Request, response: Response, next: NextFunction) => {
     try {
       const { memberId, copyId, condition, borrowDate } = request.body;

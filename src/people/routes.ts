@@ -3,6 +3,7 @@ import type { Request, Response, NextFunction } from 'express';
 
 import { ensureAuth, ensureRole } from '../auth/middlewares';
 import { createResponsePayload } from '../utils';
+import { ROLES } from '../utils/rolesHierarchy';
 
 import {
   getMembers,
@@ -18,7 +19,7 @@ const router = Router();
 router.get(
   '/people/top-50-people',
   ensureAuth,
-  ensureRole('chief librarian'),
+  ensureRole(ROLES.referenceLibrarian),
   async (request: Request, response: Response) => {
     const data = await getTopFiftyPeople();
     response.json(createResponsePayload({ payload: data }));
@@ -28,6 +29,7 @@ router.get(
 router.get(
   '/people/members',
   ensureAuth,
+  ensureRole(ROLES.referenceLibrarian),
   async (request: Request, response: Response, next: NextFunction) => {
     try {
       const { page = '1', limit = '20' } = request.query;
@@ -49,6 +51,7 @@ router.get(
 router.get(
   '/people/members/:ssn',
   ensureAuth,
+  ensureRole(ROLES.referenceLibrarian),
   async (request: Request, response: Response, next: NextFunction) => {
     try {
       const { ssn } = request.params;
@@ -63,6 +66,7 @@ router.get(
 router.post(
   '/people/members',
   ensureAuth,
+  ensureRole(ROLES.referenceLibrarian),
   async (request: Request, response: Response, next: NextFunction) => {
     try {
       const {
