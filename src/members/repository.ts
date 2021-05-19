@@ -1,10 +1,6 @@
 import database from '../utils/database';
 
-import type {
-  TMember,
-  TGetMembersPagination,
-  TMembersNormalized,
-} from './types';
+import type { TMember, TGetMembersPagination } from './types';
 
 const getMembers = async (pagination: TGetMembersPagination) => {
   const queryResult = await database('members')
