@@ -12,8 +12,8 @@ const router = Router();
 
 router.get(
   '/members',
-  // ensureAuth,
-  // ensureRole(ROLES.referenceLibrarian),
+  ensureAuth,
+  ensureRole(ROLES.referenceLibrarian),
   async (
     request: TGetMembersRequest,
     response: Response,

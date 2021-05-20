@@ -12,9 +12,7 @@ beforeAll(placeAuthTokensIntoGlobalNamespace);
 
 describe('auth middlewares', () => {
   it('should reject without authorization header in the request', async () => {
-    const response = await supertest(app)
-      .get('/people/top-50-people')
-      .expect(401);
+    const response = await supertest(app).get('/members').expect(401);
     const body = response.body as CreateJSONPayloadSignature;
     expect(body.status).toEqual(401);
     expect(body.errors).toHaveLength(0);
@@ -23,9 +21,9 @@ describe('auth middlewares', () => {
 
   it('should reject when access token is manipulated', async () => {
     const response = await supertest(app)
-      .get('/people/top-50-people')
+      .get('/members')
       .set({
-        Authorization: `Bearer ${global.CHIEF_LIBRARIAN_ACCESS_TOKEN}manipulated`,
+        Authorization: `Bearer ${global.CHECK_OUT_STAFF_ACCESS_TOKEN}manipulated`,
       })
       .expect(401);
     const body = response.body as CreateJSONPayloadSignature;
@@ -36,7 +34,7 @@ describe('auth middlewares', () => {
 
   it('should reject when trying to access endpoint protected with role upper in hierarchy', async () => {
     const response = await supertest(app)
-      .get('/people/top-50-people')
+      .get('/members')
       .set({
         Authorization: `Bearer ${global.CHECK_OUT_STAFF_ACCESS_TOKEN}`,
       })
