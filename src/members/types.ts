@@ -17,7 +17,24 @@ type TGetMembersPagination = {
   page?: string;
 };
 
-type TGetMembersRequest = Request<{}, {}, {}, TGetMembersPagination>;
+type TGetMembersRequest = Request<
+  {},
+  {},
+  {},
+  {
+    page?: string;
+  }
+>;
+
+type TGetMemberRequest = Request<{
+  ssn: TMember['ssn'];
+}>;
+
+type TPostMemberRequest = Request<{}, {}, TMember>;
+
+type TDeleteRequest = Request<{
+  ssn: TMember['ssn'];
+}>;
 
 type TMembersNormalized = {
   [ssn: string]: TMemberWithAddressesAndPhoneNumbers;
@@ -33,8 +50,11 @@ type TMemberWithAddressesAndPhoneNumbers = Omit<
 
 export type {
   TMember,
-  TGetMembersPagination,
+  TGetMemberRequest,
   TGetMembersRequest,
+  TGetMembersPagination,
+  TPostMemberRequest,
+  TDeleteRequest,
   TMembersNormalized,
   TMemberWithAddressesAndPhoneNumbers,
 };

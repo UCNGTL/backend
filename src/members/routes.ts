@@ -1,12 +1,23 @@
 import { Router } from 'express';
-import type { Request, Response, NextFunction } from 'express';
+import type { Response, NextFunction } from 'express';
 
 import { ensureAuth, ensureRole } from '../auth/middlewares';
 import { createResponsePayload } from '../utils';
 import { ROLES } from '../utils/rolesHierarchy';
 
-import { getMembers, getMember, insertMember } from './repository';
-import type { TMember, TGetMembersRequest } from './types';
+import {
+  getMembers,
+  getMember,
+  insertMember,
+  deleteLibraryMember,
+} from './repository';
+import type {
+  TMember,
+  TGetMemberRequest,
+  TGetMembersRequest,
+  TPostMemberRequest,
+  TDeleteRequest,
+} from './types';
 
 const router = Router();
 
@@ -33,7 +44,11 @@ router.get(
   '/members/:ssn',
   ensureAuth,
   ensureRole(ROLES.referenceLibrarian),
-  async (request: Request, response: Response, next: NextFunction) => {
+  async (
+    request: TGetMemberRequest,
+    response: Response,
+    next: NextFunction,
+  ) => {
     try {
       const { ssn } = request.params;
       const data = await getMember(ssn);
@@ -48,39 +63,31 @@ router.post(
   '/members',
   ensureAuth,
   ensureRole(ROLES.referenceLibrarian),
-  async (request: Request, response: Response, next: NextFunction) => {
+  async (
+    request: TPostMemberRequest,
+    response: Response,
+    next: NextFunction,
+  ) => {
     try {
-      const {
-        address1,
-        address2,
-        address3,
-        campus,
-        city,
-        fname,
-        isProfessor,
-        lname,
-        phoneNumber,
-        ssn,
-        zipCode,
-      } = request.body;
+      await insertMember(request.body);
+      response.send(
+        createResponsePayload<TMember>({ payload: request.body }),
+      );
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
-      const member: TMember = {
-        address1,
-        address2,
-        address3,
-        campus,
-        city,
-        fname,
-        isProfessor: isProfessor === 'true',
-        lname,
-        phoneNumber,
-        ssn,
-        zipCode,
-      };
-
-      await insertMember(member);
-
-      response.send(createResponsePayload({ payload: member }));
+router.delete(
+  '/members/:ssn',
+  ensureAuth,
+  ensureRole(ROLES.referenceLibrarian),
+  async (request: TDeleteRequest, response: Response, next: NextFunction) => {
+    try {
+      const { ssn } = request.params;
+      await deleteLibraryMember(ssn);
+      response.send(createResponsePayload());
     } catch (error) {
       next(error);
     }

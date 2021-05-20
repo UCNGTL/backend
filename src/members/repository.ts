@@ -2,8 +2,8 @@ import database from '../utils/database';
 import type { TPersonAddress } from '../utils/types';
 
 import type {
-  TMember,
   TGetMembersPagination,
+  TMember,
   TMembersNormalized,
   TMemberWithAddressesAndPhoneNumbers,
 } from './types';

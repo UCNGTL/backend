@@ -6,8 +6,8 @@ type TPerson = {
 
 type TPersonAddress = {
   address1: string;
-  address2: string;
-  address3: string;
+  address2?: string;
+  address3?: string;
   city: string;
   zipCode: string;
 };
