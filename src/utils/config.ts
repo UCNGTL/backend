@@ -30,7 +30,6 @@ type TTestConfig = {
 
 type TConfig = {
   database: TDatabaseConfig;
-  isDevelopmentEnvironment: boolean;
   port: number;
   redis: TRedisConfig;
   security: TSecurityConfig;

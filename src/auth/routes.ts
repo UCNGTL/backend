@@ -27,9 +27,26 @@ router.post(
       const { password, ssn } = request.body;
 
       let staffPerson;
+      let passwordHash;
       try {
-        const { passwordHash, ...rest } = await getStaffPersonBySsn(ssn);
+        const { passwordHash: hash, ...rest } = await getStaffPersonBySsn(ssn);
         staffPerson = rest;
+        passwordHash = hash;
+      } catch (error) {
+        next(
+          createError(401, 'Login failed.', {
+            errors: [
+              {
+                message: error.message,
+                source: 'ssn',
+              },
+            ],
+            expose: true,
+          }),
+        );
+      }
+
+      try {
         await passwordAndPasswordHashMatches(password, passwordHash.toString());
       } catch (error) {
         next(error);

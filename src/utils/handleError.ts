@@ -23,10 +23,6 @@ export default (error: Error | HttpError) => {
     status = error.status;
   }
 
-  if (config.isDevelopmentEnvironment) {
-    console.error(error);
-  }
-
   return createResponsePayload({
     errors,
     message,

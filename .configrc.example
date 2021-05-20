@@ -5,7 +5,6 @@
     "server": "",
     "user": ""
   },
-  "isDevelopmentEnvironment": true,
   "port": 3000,
   "redis": {
     "host": "",
