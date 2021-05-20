@@ -1,36 +1,31 @@
 import database from '../utils/database';
 
-const lend = async (
-  memberId: string,
-  copyId: number,
-  borrowDate: Date = null,
-  returnDate: Date = null,
-  dueDate: Date = null,
-  graceDate: Date = null,
-) => {
-  return database.raw(
+import type { TBaseLoan, TReturnLoanBody } from './types';
+
+const lendLoan = async ({ memberId, copyId }: TBaseLoan) => {
+  await database.raw(
     'exec dbo.insertLoan @memberId = :memberId, @copyId = :copyId, @borrowDate = :borrowDate, @returnDate = :returnDate, @dueDate = :dueDate, @graceDate = :graceDate',
     {
-      borrowDate,
+      borrowDate: null,
       copyId,
-      dueDate,
-      graceDate,
+      dueDate: null,
+      graceDate: null,
       memberId,
-      returnDate,
+      returnDate: null,
     },
   );
 };
 
-const returnLoan = async (
-  memberId: string,
-  copyId: number,
-  borrowDate: Date,
-  condition: string,
-) => {
-  return database.raw(
+const returnLoan = async ({
+  memberId,
+  copyId,
+  borrowDate,
+  condition,
+}: TReturnLoanBody) => {
+  await database.raw(
     'exec dbo.returnLoan @borrowDate = :borrowDate, @memberId = :memberId, @copyId = :copyId, @condition = :condition',
     { borrowDate, condition, copyId, memberId },
   );
 };
 
-export { lend, returnLoan };
+export { lendLoan, returnLoan };

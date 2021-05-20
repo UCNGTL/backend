@@ -1,11 +1,12 @@
 import { Router } from 'express';
-import type { Request, Response, NextFunction } from 'express';
+import type { Response, NextFunction } from 'express';
 
 import { ensureAuth, ensureRole } from '../auth/middlewares';
 import { createResponsePayload } from '../utils';
 import { ROLES } from '../utils/rolesHierarchy';
 
-import { lend, returnLoan } from './repository';
+import { lendLoan, returnLoan } from './repository';
+import type { TPatchLoanRequest, TPostLoanRequest } from './types';
 
 const router = Router();
 
@@ -13,13 +14,10 @@ router.post(
   '/loans',
   ensureAuth,
   ensureRole(ROLES.checkOutStaff),
-  async (request: Request, response: Response, next: NextFunction) => {
+  async (request: TPostLoanRequest, response: Response, next: NextFunction) => {
     try {
-      const { memberId, copyId } = request.body;
-
-      // can be extended to take dates as parameters
-      const data = await lend(memberId, copyId);
-      response.json(createResponsePayload({ payload: data }));
+      await lendLoan(request.body);
+      response.json(createResponsePayload({ payload: request.body }));
     } catch (error) {
       next(error);
     }
@@ -27,15 +25,17 @@ router.post(
 );
 
 router.patch(
-  '/loans/return',
+  '/loans',
   ensureAuth,
   ensureRole(ROLES.checkOutStaff),
-  async (request: Request, response: Response, next: NextFunction) => {
+  async (
+    request: TPatchLoanRequest,
+    response: Response,
+    next: NextFunction,
+  ) => {
     try {
-      const { memberId, copyId, condition, borrowDate } = request.body;
-
-      const data = await returnLoan(memberId, copyId, borrowDate, condition);
-      response.json(createResponsePayload({ payload: data }));
+      await returnLoan(request.body);
+      response.json(createResponsePayload({ payload: request.body }));
     } catch (error) {
       next(error);
     }
