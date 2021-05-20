@@ -24,7 +24,7 @@ export default (error: Error | HttpError) => {
   }
 
   if (config.isDevelopmentEnvironment) {
-    message = error.message;
+    console.error(error);
   }
 
   return createResponsePayload({

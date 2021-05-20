@@ -1,3 +1,5 @@
+import createError from 'http-errors';
+
 import database from '../utils/database';
 import type { TPersonAddress } from '../utils/types';
 
@@ -74,8 +76,16 @@ const getMembers = async (pagination: TGetMembersPagination) => {
   return { data: membersValues, pagination: queryResult.pagination };
 };
 
-const getMember = async (ssn: string) => {
-  return database.raw<TMember>(`exec dbo.getMember @ssn = ${ssn}`);
+const getMember = async (ssn: string, throwIfNotFound = true) => {
+  const result = await database.raw<TMember[]>(
+    `exec dbo.getMember @ssn = ${ssn}`,
+  );
+  if (throwIfNotFound && !result[0]) {
+    throw createError(404, `Member with ssn: ${ssn} was not found.`, {
+      expose: true,
+    });
+  }
+  return result[0];
 };
 
 const insertMember = async (member: TMember) => {

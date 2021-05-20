@@ -38,6 +38,21 @@ describe('GET /members/:ssn', () => {
     expect(body.message).toEqual('Ok');
     expect(body.errors).toHaveLength(0);
   });
+
+  it('should return 404 when trying to get not existing member', async () => {
+    const response = await supertest(app)
+      .get('/members/FSAFASasfSAKNFJNASFK')
+      .set({
+        Authorization: `Bearer ${global.CHIEF_LIBRARIAN_ACCESS_TOKEN}`,
+      })
+      .expect(404);
+    const body = response.body as CreateJSONPayloadSignature;
+    expect(body.status).toEqual(404);
+    expect(body.message).toEqual(
+      'Member with ssn: FSAFASasfSAKNFJNASFK was not found.',
+    );
+    expect(body.errors).toHaveLength(0);
+  });
 });
 
 describe('POST /members', () => {
@@ -63,6 +78,20 @@ describe('POST /members', () => {
     expect(body.status).toEqual(200);
     expect(body.message).toEqual('Ok');
     expect(body.errors).toHaveLength(0);
+  });
+
+  it('should not insert member when payload is wrong', async () => {
+    const response = await supertest(app)
+      .post('/members')
+      .send({
+        wrongPayload: 'yes it is!',
+      })
+      .set({
+        Authorization: `Bearer ${global.CHIEF_LIBRARIAN_ACCESS_TOKEN}`,
+      })
+      .expect(500);
+    const body = response.body as CreateJSONPayloadSignature;
+    expect(body.status).toEqual(500);
   });
 });
 

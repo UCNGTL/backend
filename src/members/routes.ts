@@ -17,6 +17,7 @@ import type {
   TGetMembersRequest,
   TPostMemberRequest,
   TDeleteRequest,
+  TGetMembersResponsePayload,
 } from './types';
 
 const router = Router();
@@ -33,7 +34,11 @@ router.get(
     try {
       const { page } = request.query;
       const { data, pagination } = await getMembers({ page });
-      response.json(createResponsePayload({ payload: { data, pagination } }));
+      response.json(
+        createResponsePayload<TGetMembersResponsePayload>({
+          payload: { data, pagination },
+        }),
+      );
     } catch (error) {
       next(error);
     }

@@ -28,4 +28,8 @@ const returnLoan = async ({
   );
 };
 
-export { lendLoan, returnLoan };
+const deleteLoan = async (parameters: Omit<TReturnLoanBody, 'condition'>) => {
+  await database('loans').where(parameters).delete();
+};
+
+export { lendLoan, returnLoan, deleteLoan };

@@ -1,5 +1,7 @@
 import type { Request } from 'express';
+import type { IBasePagination } from 'knex-paginate';
 
+import { TGetBooksResponsePayload } from '../books/types';
 import type {
   TPerson,
   TPersonAddress,
@@ -25,6 +27,11 @@ type TGetMembersRequest = Request<
     page?: string;
   }
 >;
+
+type TGetMembersResponsePayload = {
+  data: TMemberWithAddressesAndPhoneNumbers[];
+  pagination: IBasePagination;
+};
 
 type TGetMemberRequest = Request<{
   ssn: TMember['ssn'];
@@ -52,6 +59,7 @@ export type {
   TMember,
   TGetMemberRequest,
   TGetMembersRequest,
+  TGetMembersResponsePayload,
   TGetMembersPagination,
   TPostMemberRequest,
   TDeleteRequest,

@@ -6,10 +6,10 @@ type TBaseLoan = {
 };
 
 type TLoan = TBaseLoan & {
-  borrowDate: Date;
-  returnDate: Date;
-  dueDate: Date;
-  graceDate: Date;
+  borrowDate: string;
+  returnDate: string;
+  dueDate: string;
+  graceDate: string;
 };
 
 type TReturnLoanBody = TBaseLoan & {

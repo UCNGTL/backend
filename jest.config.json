@@ -4,6 +4,7 @@
       "tsconfig": "tsconfig.json"
     }
   },
+  "silent": true,
   "moduleFileExtensions": ["ts", "js"],
   "setupFilesAfterEnv": ["./src/__tests__/setup.ts"],
   "testEnvironment": "node",

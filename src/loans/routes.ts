@@ -17,7 +17,9 @@ router.post(
   async (request: TPostLoanRequest, response: Response, next: NextFunction) => {
     try {
       await lendLoan(request.body);
-      response.json(createResponsePayload({ payload: request.body }));
+      response
+        .status(201)
+        .json(createResponsePayload({ payload: request.body, status: 201 }));
     } catch (error) {
       next(error);
     }
