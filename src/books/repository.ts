@@ -41,6 +41,7 @@ const getBooks = async (
     .orderBy('isbn', 'asc')
     .paginate<TBook[]>({
       currentPage: Number.parseInt(pagination.page, 10) || 1,
+      isLengthAware: true,
       perPage: 50,
     });
 
