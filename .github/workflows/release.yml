@@ -2,7 +2,7 @@ name: release
 
 on:
   push:
-    branches: [main]
+    branches: [github-workflows]
 
 jobs:
   release:
@@ -21,12 +21,13 @@ jobs:
           node-version: '14'
       - name: inject env variables and security tokens
         run: |
-          echo $ENV_VARS
           echo -e "$ENV_VARS" > ./.configrc
           echo -e "$ACCESS_TOKEN_PUBLIC" > ./security/accessTokenPublic.pem
           echo -e "$ACCESS_TOKEN_PRIVATE" > ./security/accessTokenPrivate.pem
           echo -e "$REFRESH_TOKEN_PUBLIC" > ./security/refreshTokenPublic.pem
           echo -e "$REFRESH_TOKEN_PRIVATE" > ./security/refreshTokenPrivate.pem
+          cat ./.configrc
+          cat ./security/accessTokenPublic.pem
       - run: npm ci
       - run: npm run test
       - name: replace .gitignore, commit local changes and push to heroku
