@@ -18,6 +18,12 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: "bibliobrain"
+          heroku_email: ${{ secrets.HEROKU_ACCOUNT_EMAIL }}
+          justlogin: true
       - name: inject env variables and security token
         run: |
           echo -e $ENV_VARS > ./.configrc
@@ -26,10 +32,14 @@ jobs:
           echo -e "$REFRESH_TOKEN_PUBLIC" > ./security/refreshTokenPublic.pem
           echo -e "$REFRESH_TOKEN_PRIVATE" > ./security/refreshTokenPrivate.pem
           echo -e $ENV_VARS
-          cat ./.configrc
       - run: npm ci
       - run: npm run test
       - name: replace .gitignore, commit local changes and push to heroku
         run: |
           rm .gitignore
           mv .gitignore.heroku .gitignore
+          git config --global user.name "Bibliobrain Bot"
+          git config --global user.email "bot@bibliobrain.com"
+          git add .
+          git commit -m "mirror commit of $GITHUB_SHA"
+          git push heroku main
