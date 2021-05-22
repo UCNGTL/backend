@@ -42,4 +42,5 @@ jobs:
           git add .
           git commit -m "mirror commit of $GITHUB_SHA"
           heroku git:remote -a bibliobrain
+          git fetch --all --unshallow
           git push heroku HEAD:main
