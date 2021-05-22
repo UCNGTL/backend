@@ -20,11 +20,12 @@ jobs:
           node-version: '14'
       - name: inject env variables and security token
         run: |
-          printf '%b\n' "$ENV_VARS" > ./.configrc
+          echo -e $ENV_VARS > ./.configrc
           echo -e "$ACCESS_TOKEN_PUBLIC" > ./security/accessTokenPublic.pem
           echo -e "$ACCESS_TOKEN_PRIVATE" > ./security/accessTokenPrivate.pem
           echo -e "$REFRESH_TOKEN_PUBLIC" > ./security/refreshTokenPublic.pem
           echo -e "$REFRESH_TOKEN_PRIVATE" > ./security/refreshTokenPrivate.pem
+          echo -e $ENV_VARS
           cat ./.configrc
       - run: npm ci
       - run: npm run test
