@@ -1,0 +1,33 @@
+name: release
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      ENV_VARS: ${{ secrets.ENV_VARS }}
+      ACCESS_TOKEN_PUBLIC: ${{ secrets.ACCESS_TOKEN_PUBLIC }}
+      ACCESS_TOKEN_PRIVATE: ${{ secrets.ACCESS_TOKEN_PRIVATE }}
+      REFRESH_TOKEN_PUBLIC: ${{ secrets.REFRESH_TOKEN_PUBLIC }}
+      REFRESH_TOKEN_PRIVATE: ${{ secrets.REFRESH_TOKEN_PRIVATE }}
+      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - run: echo -e "$ENV_VARS" > ./.configrc
+      - run: echo -e "$ACCESS_TOKEN_PUBLIC" > ./security/accessTokenPublic.pem
+      - run: echo -e "$ACCESS_TOKEN_PRIVATE" > ./security/accessTokenPrivate.pem
+      - run: echo -e "$REFRESH_TOKEN_PUBLIC" > ./security/refreshTokenPublic.pem
+      - run: echo -e "$REFRESH_TOKEN_PRIVATE" > ./security/refreshTokenPrivate.pem
+      - run: npm ci
+      - run: npm run test
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_email: ${{ secrets.HEROKU_ACCOUNT_EMAIL }}
+          heroku_app_name: bibliobrain
