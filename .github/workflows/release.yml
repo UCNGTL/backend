@@ -1,6 +1,5 @@
 name: release
 
-{\n  "database": {\n    "name": "gtl",\n    "password": "PWbjaM7qKm6aympm",\n    "server": "20.79.81.78",\n    "user": "sa"\n  },\n  "port": 3000,\n  "redis": {\n    "url": "redis://:p18933a05fc91dd1182609ba82a7d380b8f8f937068f8c629676af27f5456946b@ec2-52-212-203-219.eu-west-1.compute.amazonaws.com:31189",\n    "host": "127.0.0.1",\n    "port": 6379\n  },\n  "security": {\n    "accessTokenPrivateKeyFilename": "accessTokenPrivate.pem",\n    "accessTokenPublicKeyFilename": "accessTokenPublic.pem",\n    "refreshTokenPrivateKeyFilename": "refreshTokenPrivate.pem",\n    "refreshTokenPublicKeyFilename": "refreshTokenPublic.pem"\n  },\n  "test": {\n    "chiefLibrarianSsn": "AQJOAQD1",\n    "chiefLibrarianPassword": "49E7NJMw",\n    "checkOutStaffSsn": "AYIOMRZ1623",\n    "checkOutStaffPassword": "g8tjSuJk"\n  }\n}
 on:
   push:
     branches: [github-workflows]
