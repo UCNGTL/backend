@@ -8,7 +8,7 @@ const router = Router();
 router.post(
   '/internal/send-notices',
   async (request: Request, response: Response) => {
-    response.json(createResponsePayload());
+    response.json(createResponsePayload({ payload: request.body }));
   },
 );
 
