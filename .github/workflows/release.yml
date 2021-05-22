@@ -2,34 +2,37 @@ name: release
 
 on:
   push:
-    branches: [main]
+    branches: [github-workflows]
 
 jobs:
   release:
     runs-on: ubuntu-latest
     env:
       ENV_VARS: ${{ secrets.ENV_VARS }}
-      ACCESS_TOKEN_PUBLIC: ${{ secrets.ACCESS_TOKEN_PUBLIC }}
-      ACCESS_TOKEN_PRIVATE: ${{ secrets.ACCESS_TOKEN_PRIVATE }}
-      REFRESH_TOKEN_PUBLIC: ${{ secrets.REFRESH_TOKEN_PUBLIC }}
-      REFRESH_TOKEN_PRIVATE: ${{ secrets.REFRESH_TOKEN_PRIVATE }}
-      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
-      - name: inject env variables and security tokens
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: "bibliobrain"
+          heroku_email: ${{ secrets.HEROKU_ACCOUNT_EMAIL }}
+          justlogin: true
+      - name: inject env variables and security token
         run: |
-          echo $ENV_VARS
-          echo -e "$ENV_VARS" > ./.configrc
-          echo -e "$ACCESS_TOKEN_PUBLIC" > ./security/accessTokenPublic.pem
-          echo -e "$ACCESS_TOKEN_PRIVATE" > ./security/accessTokenPrivate.pem
-          echo -e "$REFRESH_TOKEN_PUBLIC" > ./security/refreshTokenPublic.pem
-          echo -e "$REFRESH_TOKEN_PRIVATE" > ./security/refreshTokenPrivate.pem
+          echo -e $ENV_VARS > ./.configrc
+          echo -e "${{ secrets.ACCESS_TOKEN_PUBLIC }}" > ./security/accessTokenPublic.pem
+          echo -e "${{ secrets.ACCESS_TOKEN_PRIVATE }}" > ./security/accessTokenPrivate.pem
+          echo -e "${{ secrets.REFRESH_TOKEN_PUBLIC }}" > ./security/refreshTokenPublic.pem
+          echo -e "${{ secrets.REFRESH_TOKEN_PRIVATE }}" > ./security/refreshTokenPrivate.pem
       - run: npm ci
       - run: npm run test
-      - name: replace .gitignore, commit local changes and push to heroku
+      - run: npm run build
+      - name: push to heroku
         run: |
-          rm .gitignore
-          mv .gitignore.heroku .gitignore
+          heroku container:login
+          heroku git:remote -a bibliobrain
+          heroku container:push web
+          heroku container:release web
