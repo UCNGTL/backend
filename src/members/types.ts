@@ -1,7 +1,6 @@
 import type { Request } from 'express';
 import type { IBasePagination } from 'knex-paginate';
 
-import { TGetBooksResponsePayload } from '../books/types';
 import type {
   TPerson,
   TPersonAddress,

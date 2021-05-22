@@ -8,10 +8,9 @@ type TDatabaseConfig = {
 };
 
 type TRedisConfig = {
-  host: string;
-  password: string | null;
-  port: number;
-  user: string | null;
+  host?: string;
+  url?: string | null;
+  port?: number;
 };
 
 type TSecurityConfig = {

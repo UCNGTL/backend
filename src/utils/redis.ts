@@ -4,10 +4,16 @@ import redis from 'redis';
 
 import config from './config';
 
-const client = redis.createClient({
-  host: config.redis.host,
-  port: config.redis.port,
-});
+const redisConfig = config.redis.url
+  ? {
+      url: config.redis.url,
+    }
+  : {
+      host: config.redis.host,
+      port: config.redis.port,
+    };
+
+const client = redis.createClient(redisConfig);
 
 const del = util.promisify(client.del).bind(client);
 const get = util.promisify(client.get).bind(client);
