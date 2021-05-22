@@ -42,4 +42,5 @@ jobs:
           git config --global user.email "bot@bibliobrain.com"
           git add .
           git commit -m "mirror commit of $GITHUB_SHA"
+          heroku git:remote -a bibliobrain
           git push heroku main
