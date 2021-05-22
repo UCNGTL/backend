@@ -21,6 +21,7 @@ jobs:
           node-version: '14'
       - name: inject env variables and security tokens
         run: |
+          echo $ENV_VARS
           echo -e "$ENV_VARS" > ./.configrc
           echo -e "$ACCESS_TOKEN_PUBLIC" > ./security/accessTokenPublic.pem
           echo -e "$ACCESS_TOKEN_PRIVATE" > ./security/accessTokenPrivate.pem
