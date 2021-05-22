@@ -7,12 +7,6 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    env:
-      ENV_VARS: ${{ secrets.ENV_VARS }}
-      ACCESS_TOKEN_PUBLIC: ${{ secrets.ACCESS_TOKEN_PUBLIC }}
-      ACCESS_TOKEN_PRIVATE: ${{ secrets.ACCESS_TOKEN_PRIVATE }}
-      REFRESH_TOKEN_PUBLIC: ${{ secrets.REFRESH_TOKEN_PUBLIC }}
-      REFRESH_TOKEN_PRIVATE: ${{ secrets.REFRESH_TOKEN_PRIVATE }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -26,21 +20,17 @@ jobs:
           justlogin: true
       - name: inject env variables and security token
         run: |
-          echo -e $ENV_VARS > ./.configrc
-          echo -e "$ACCESS_TOKEN_PUBLIC" > ./security/accessTokenPublic.pem
-          echo -e "$ACCESS_TOKEN_PRIVATE" > ./security/accessTokenPrivate.pem
-          echo -e "$REFRESH_TOKEN_PUBLIC" > ./security/refreshTokenPublic.pem
-          echo -e "$REFRESH_TOKEN_PRIVATE" > ./security/refreshTokenPrivate.pem
+          echo -e "${{ secrets.ENV_VARS }}" > ./.configrc
+          echo -e "${{ secrets.ACCESS_TOKEN_PUBLIC }}" > ./security/accessTokenPublic.pem
+          echo -e "${{ secrets.ACCESS_TOKEN_PRIVATE }}" > ./security/accessTokenPrivate.pem
+          echo -e "${{ secrets.REFRESH_TOKEN_PUBLIC }}" > ./security/refreshTokenPublic.pem
+          echo -e "${{ secrets.REFRESH_TOKEN_PRIVATE }}" > ./security/refreshTokenPrivate.pem
       - run: npm ci
       - run: npm run test
-      - name: replace .gitignore, commit local changes and push to heroku
+      - run: npm run build
+      - name: push to heroku
         run: |
-          rm .gitignore
-          mv .gitignore.heroku .gitignore
-          git config --global user.name "Bibliobrain Bot"
-          git config --global user.email "bot@bibliobrain.com"
-          git add .
-          git commit -m "mirror commit of $GITHUB_SHA"
+          heroku container:login
           heroku git:remote -a bibliobrain
-          git fetch --all --unshallow
-          git push heroku HEAD:main
+          heroku container:push web
+          heroku container:release web
