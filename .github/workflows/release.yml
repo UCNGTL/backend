@@ -31,7 +31,6 @@ jobs:
           echo -e "$ACCESS_TOKEN_PRIVATE" > ./security/accessTokenPrivate.pem
           echo -e "$REFRESH_TOKEN_PUBLIC" > ./security/refreshTokenPublic.pem
           echo -e "$REFRESH_TOKEN_PRIVATE" > ./security/refreshTokenPrivate.pem
-          echo -e $ENV_VARS
       - run: npm ci
       - run: npm run test
       - name: replace .gitignore, commit local changes and push to heroku
@@ -43,4 +42,4 @@ jobs:
           git add .
           git commit -m "mirror commit of $GITHUB_SHA"
           heroku git:remote -a bibliobrain
-          git push heroku main
+          git push heroku HEAD:main
