@@ -2,7 +2,7 @@ name: release
 
 on:
   push:
-    branches: [github-workflows]
+    branches: [main]
 
 jobs:
   release:
