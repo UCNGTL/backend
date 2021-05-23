@@ -1,6 +1,9 @@
 # bibliobrain/backend
 typescript backend for GTL library
 
+## checklist of improvements for v1 release
+- [ ] improve error handling from stored procedures
+
 ## setup
 1. generate 2 pairs of cryptographic keys with following commands:
 ```bash
