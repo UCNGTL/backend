@@ -1,12 +1,22 @@
 import type { Request } from 'express';
 import type { IBasePagination } from 'knex-paginate';
 
+import type { TLoan } from '../loans/types';
+
 type TGetBooksRequest = Request<
   {},
   {},
   {},
   TGetBooksFilter & TGetBooksPagination
 >;
+
+type TGetBookAvailabilityRequest = Request<Pick<TBook, 'isbn'>>;
+
+type TGetBookAvailabilityResponsePayload = Array<{
+  copyId: TLoan['copyId'];
+  returnDate: TLoan['returnDate'];
+  graceDate: TLoan['graceDate'];
+}>;
 
 type TGetBooksResponsePayload = {
   data: TBookWithAuthorsAndSubjects[];
@@ -35,6 +45,7 @@ type TBookWithAuthorsAndSubjects = Omit<TBook, 'author' | 'subject'> & {
 };
 
 type TGetBooksFilter = {
+  isbn?: string;
   language?: string;
   subject?: string;
   edition?: string;
@@ -54,4 +65,6 @@ export type {
   TGetBooksPagination,
   TGetBooksRequest,
   TGetBooksResponsePayload,
+  TGetBookAvailabilityRequest,
+  TGetBookAvailabilityResponsePayload,
 };

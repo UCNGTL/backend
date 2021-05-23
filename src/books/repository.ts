@@ -1,9 +1,12 @@
+import createError from 'http-errors';
+
 import database from '../utils/database';
 
 import type {
   TBook,
   TBooksNormalized,
   TBookWithAuthorsAndSubjects,
+  TGetBookAvailabilityResponsePayload,
   TGetBooksFilter,
   TGetBooksPagination,
 } from './types';
@@ -65,4 +68,22 @@ const getBooks = async (
   return { data: booksValues, pagination: queryResult.pagination };
 };
 
-export { getBooks };
+const getBookAvailability = async (
+  isbn: TBook['isbn'],
+  throwIfNotFound = true,
+): Promise<TGetBookAvailabilityResponsePayload> => {
+  const data = await database('books')
+    .select('copies.id as copyId', 'loans.returnDate', 'loans.graceDate')
+    .innerJoin('copies', 'copies.itemId', 'books.itemId')
+    .innerJoin('loans', 'copies.id', 'loans.copyId')
+    .where({ isbn });
+  if (throwIfNotFound && !data.length) {
+    throw createError(
+      404,
+      'ISBN is either incorrect or library does not register any copies associated with the provided ISBN.',
+    );
+  }
+  return data;
+};
+
+export { getBooks, getBookAvailability };

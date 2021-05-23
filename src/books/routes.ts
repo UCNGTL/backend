@@ -3,8 +3,13 @@ import type { Response } from 'express';
 
 import { createResponsePayload } from '../utils';
 
-import { getBooks } from './repository';
-import type { TGetBooksRequest, TGetBooksResponsePayload } from './types';
+import { getBookAvailability, getBooks } from './repository';
+import type {
+  TGetBookAvailabilityRequest,
+  TGetBookAvailabilityResponsePayload,
+  TGetBooksRequest,
+  TGetBooksResponsePayload,
+} from './types';
 
 const router = Router();
 
@@ -17,5 +22,16 @@ router.get('/books', async (request: TGetBooksRequest, response: Response) => {
     }),
   );
 });
+
+router.get(
+  '/books/:isbn/availability',
+  async (request: TGetBookAvailabilityRequest, response: Response) => {
+    const { isbn } = request.params;
+    const payload = await getBookAvailability(isbn);
+    response.json(
+      createResponsePayload<TGetBookAvailabilityResponsePayload>({ payload }),
+    );
+  },
+);
 
 export default router;
