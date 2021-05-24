@@ -75,7 +75,7 @@ const getBookAvailability = async (
   const data = await database('books')
     .select('copies.id as copyId', 'loans.returnDate', 'loans.graceDate')
     .innerJoin('copies', 'copies.itemId', 'books.itemId')
-    .innerJoin('loans', 'copies.id', 'loans.copyId')
+    .leftJoin('loans', 'copies.id', 'loans.copyId')
     .where({ isbn });
   if (throwIfNotFound && !data.length) {
     throw createError(

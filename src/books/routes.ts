@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import type { Response } from 'express';
+import type { Response, NextFunction } from 'express';
 
 import { createResponsePayload } from '../utils';
 
@@ -13,24 +13,39 @@ import type {
 
 const router = Router();
 
-router.get('/books', async (request: TGetBooksRequest, response: Response) => {
-  const { page, ...filters } = request.query;
-  const { data, pagination } = await getBooks({ page }, filters);
-  response.json(
-    createResponsePayload<TGetBooksResponsePayload>({
-      payload: { data, pagination },
-    }),
-  );
-});
+router.get(
+  '/books',
+  async (request: TGetBooksRequest, response: Response, next: NextFunction) => {
+    try {
+      const { page, ...filters } = request.query;
+      const { data, pagination } = await getBooks({ page }, filters);
+      response.json(
+        createResponsePayload<TGetBooksResponsePayload>({
+          payload: { data, pagination },
+        }),
+      );
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 router.get(
   '/books/:isbn/availability',
-  async (request: TGetBookAvailabilityRequest, response: Response) => {
-    const { isbn } = request.params;
-    const payload = await getBookAvailability(isbn);
-    response.json(
-      createResponsePayload<TGetBookAvailabilityResponsePayload>({ payload }),
-    );
+  async (
+    request: TGetBookAvailabilityRequest,
+    response: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const { isbn } = request.params;
+      const payload = await getBookAvailability(isbn);
+      response.json(
+        createResponsePayload<TGetBookAvailabilityResponsePayload>({ payload }),
+      );
+    } catch (error) {
+      next(error);
+    }
   },
 );
 

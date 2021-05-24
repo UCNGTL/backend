@@ -13,6 +13,7 @@ import loanRoutes from './loans/routes';
 import membersRoutes from './members/routes';
 import { handleError } from './utils';
 import config from './utils/config';
+import videoGamesRoutes from './videogames/routes';
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use(internalRoutes);
 app.use(membersRoutes);
 app.use(bookRoutes);
 app.use(loanRoutes);
+app.use(videoGamesRoutes);
 
 app.use('*', (request: Request, response: Response, next: NextFunction) => {
   next(createError(404, 'Page does not exist.', { expose: true }));
