@@ -9,7 +9,7 @@ type TDatabaseConfig = {
 
 type TRedisConfig = {
   host?: string;
-  url?: string | null;
+  url?: string;
   port?: number;
 };
 
