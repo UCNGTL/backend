@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import type { Request, Response, NextFunction } from 'express';
 
+import { ensureAuth, ensureRole } from '../auth/middlewares';
 import { createResponsePayload } from '../utils';
 
 import { getVideosGameAvailability, getVideosGames } from './repository';
@@ -30,6 +31,8 @@ router.get(
 
 router.get(
   '/video-games/:_id/availability',
+  ensureAuth,
+  ensureRole('check-out staff'),
   async (
     request: TGetVideoGameAvailabilityRequest,
     response: Response,

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import type { Response, NextFunction } from 'express';
 
+import { ensureAuth, ensureRole } from '../auth/middlewares';
 import { createResponsePayload } from '../utils';
 
 import { getBookAvailability, getBooks } from './repository';
@@ -32,6 +33,8 @@ router.get(
 
 router.get(
   '/books/:isbn/availability',
+  ensureAuth,
+  ensureRole('check-out staff'),
   async (
     request: TGetBookAvailabilityRequest,
     response: Response,
