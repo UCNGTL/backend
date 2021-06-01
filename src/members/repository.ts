@@ -77,10 +77,13 @@ const getMembers = async (pagination: TGetMembersPagination) => {
 };
 
 const getMember = async (ssn: string, throwIfNotFound = true) => {
-  const result = await database.raw<TMember[]>(
-    `exec dbo.getMember @ssn = ${ssn}`,
-  );
-  if (throwIfNotFound && !result[0]) {
+  const result = await database('members')
+    .select('*')
+    .where({
+      personSsn: ssn,
+    })
+    .first();
+  if (throwIfNotFound && !result) {
     throw createError(404, `Member with ssn: ${ssn} was not found.`, {
       expose: true,
     });

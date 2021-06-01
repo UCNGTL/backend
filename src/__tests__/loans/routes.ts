@@ -39,8 +39,8 @@ describe('POST /loans', () => {
   });
 });
 
-describe('POST /loans', () => {
-  it('should insert a new loan', async () => {
+describe('PATCH /loans', () => {
+  it('should return existing loan and update condition', async () => {
     await supertest(app)
       .post('/loans')
       .send({

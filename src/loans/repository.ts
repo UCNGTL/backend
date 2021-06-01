@@ -3,17 +3,20 @@ import database from '../utils/database';
 import type { TBaseLoan, TReturnLoanBody } from './types';
 
 const lendLoan = async ({ memberId, copyId }: TBaseLoan) => {
-  await database.raw(
-    'exec dbo.insertLoan @memberId = :memberId, @copyId = :copyId, @borrowDate = :borrowDate, @returnDate = :returnDate, @dueDate = :dueDate, @graceDate = :graceDate',
-    {
-      borrowDate: null,
-      copyId,
-      dueDate: null,
-      graceDate: null,
-      memberId,
-      returnDate: null,
-    },
-  );
+  const borrowDate = new Date();
+  const dueDate = new Date(
+    new Date().setDate(borrowDate.getDate() + 21),
+  ).toLocaleDateString('fr-CA');
+  const graceDate = new Date(
+    new Date().setDate(borrowDate.getDate() + 14),
+  ).toLocaleDateString('fr-CA');
+  await database('loans').insert({
+    borrowDate: borrowDate.toLocaleDateString('fr-CA'),
+    copyId,
+    dueDate,
+    graceDate,
+    memberId,
+  });
 };
 
 const returnLoan = async ({
